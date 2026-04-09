@@ -82,10 +82,6 @@ public class MatrixPetriNet : PetriNetBase
         ArgumentNullException.ThrowIfNull(inArcs);
         ArgumentNullException.ThrowIfNull(outArcs);
 
-        if (placeNames.Count == 0)
-            throw new ArgumentException("places must be non-empty", nameof(placeNames));
-        if (transitionNames.Count == 0)
-            throw new ArgumentException("there must be at least one transition", nameof(transitionNames));
         Contract.Requires(!string.IsNullOrEmpty(id), "must provide valid PN ID");
         Contract.Requires(placeNames != null, "must provide a set of place names");
         Contract.Requires(transitionNames != null, "must provide a set of transition names");

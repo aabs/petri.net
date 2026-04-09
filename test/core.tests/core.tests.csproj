@@ -21,4 +21,10 @@
     <ProjectReference Include="../../src/core/petrinets2.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="standard test nets/*.xml">
+      <LogicalName>pnml/%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

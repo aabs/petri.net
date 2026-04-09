@@ -17,14 +17,6 @@ public class GraphPetriNet : PetriNetBase
         ArgumentNullException.ThrowIfNull(inArcs);
         ArgumentNullException.ThrowIfNull(outArcs);
 
-        if (placeNames.Count == 0)
-        {
-            throw new ArgumentException("At least one place is required.", nameof(placeNames));
-        }
-        if (transitionNames.Count == 0)
-        {
-            throw new ArgumentException("At least one transition is required.", nameof(transitionNames));
-        }
         if (placeNames.Values.Any(string.IsNullOrWhiteSpace))
         {
             throw new ArgumentException("Place names must be non-empty.", nameof(placeNames));
