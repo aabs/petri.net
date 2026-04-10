@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS8605;CS8618;CS8625</NoWarn>
     <CocoExePath Condition="Exists('$(MSBuildProjectDirectory)/../../tools/coco.exe')">$(MSBuildProjectDirectory)/../../tools/coco.exe</CocoExePath>
     <CocoExePath Condition="'$(CocoExePath)' == '' and Exists('$(MSBuildProjectDirectory)/../../tools/Coco.exe')">$(MSBuildProjectDirectory)/../../tools/Coco.exe</CocoExePath>
   </PropertyGroup>

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace core.tests;
 
-public class TestArcNotation
+public class ArcNotationTests
 {
     private static IEnumerable<object[]> WithCaseIds(IEnumerable<object[]> data, string prefix)
     {
