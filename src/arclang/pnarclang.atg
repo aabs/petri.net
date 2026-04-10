@@ -1,0 +1,151 @@
+﻿using System.Linq;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using petrinets2.core;
+
+COMPILER PetriNetSpec
+
+	public CreatePetriNet Builder { get; set; }
+
+CHARACTERS
+	digit = '0'..'9' .
+	letter = 'a' .. 'z' + 'A' .. 'Z' .
+
+TOKENS
+	number = digit {digit} .
+	ident = letter {(letter | digit)} .
+	pnStart = "PetriNet" .
+	end = "End" . 
+	placeFromEnd = ')' .
+	placeToEnd = '(' .
+	tranFromEnd = ']' .
+	tranToEnd = '[' .
+	inhibitorMark = 'o' .
+	arcLine = '-' .
+	sep = ';' .
+	idListStart = '{' .
+	idListEnd = '}' .
+	listSep = ',' .
+
+IGNORE '\r' + '\n'
+
+PRODUCTIONS
+PetriNetSpec						(.
+									.)
+	=
+	pnStart 
+		ident						(.	
+									Builder = CreatePetriNet.Called(t.val);
+									.)
+	"<"
+	ArcSetSpec {ArcSetSpec}
+    ">"
+    {
+        MarkingSpec
+    }
+	.
+
+
+ArcSetSpec							(.
+									List<string> src = new List<string>();
+									List<string> dst = new List<string>();
+									Debug.Assert(Builder != null);
+									bool isInArc = true;
+									int weight = 1;
+									bool isInhibitor = false;
+									.)
+	 = (
+            SrcName<ref src> 
+		    {
+                ArcDetail<ref isInArc, ref weight, ref isInhibitor> 
+		        DstName<ref dst>			(.
+									        List<string> t = isInArc ? dst : src;
+									        List<string> p = isInArc ? src : dst;
+                                            Builder.GenerateArc(p,t,weight,isInhibitor, isInArc);
+									        .)
+            }
+    		sep
+        )|(
+            {
+                SrcName<ref src> 
+		        ArcDetail<ref isInArc, ref weight, ref isInhibitor> 
+		    }
+            DstName<ref dst>			(.
+									    List<string> t = isInArc ? dst : src;
+									    List<string> p = isInArc ? src : dst;
+                                        Builder.GenerateArc(p,t,weight,isInhibitor, isInArc);
+									    .)
+	    	sep
+        )
+	 .
+    MarkingSpec
+    =
+        MarkingEntry
+        {
+            MarkingEntry
+        }
+    .
+
+    MarkingEntry                    (.string id = "", tokens = "";.)
+    =
+        ident                       (.id = t.val;.)
+        '=' 
+        number                      (.tokens = t.val;
+                                      Builder.WithPlace(id).HavingMarking(int.Parse(tokens)).Done();
+                                    .)
+        ";"
+    .
+
+	SrcName<.ref List<string> src.>
+	=	StringList<ref src>.
+
+	DstName<.ref List<string> dst.>
+	=	StringList<ref dst>.
+
+	StringList<.ref List<string> src.> 
+	= 
+		ident						(.  src.Add(t.val); .)
+	|	idListStart
+		ident						(.  src.Add(t.val); .)
+		{ listSep	
+			ident					(.  src.Add(t.val); .)
+		}	
+		idListEnd
+	.
+
+	ArcDetail<ref bool isInArc, ref int weight, ref bool inhib> 	(.
+									weight = 1;
+									isInArc = true;
+									inhib = false;
+									.)
+	 = InArcDetail<ref inhib, ref weight>	(.
+											isInArc = true;
+											.)
+	 | OutArcDetail<ref inhib, ref weight>	(.
+											isInArc = false;
+											.)
+	 .
+	InArcDetail<ref bool inhib, ref int weight>	(.inhib = false;.)
+	 = placeFromEnd {arcLine} 
+		[
+		number								(.
+											int.TryParse(t.val, out weight);
+											.)
+		]									 
+		{arcLine} 
+		[
+		inhibitorMark									(. inhib = true; .) 
+		]								
+		{arcLine} 
+		tranToEnd .
+	OutArcDetail<ref bool inhib, ref int weight>	(.inhib = false;.) 
+		= tranFromEnd {arcLine} 
+		[
+		number								(.
+											int.TryParse(t.val, out weight);
+											.)
+		]									 
+		{arcLine} placeToEnd .
+
+END PetriNetSpec .

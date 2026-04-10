@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/arclang/arclang.csproj" />
     <Project Path="src/cli/petrinets2.cli.csproj" />
     <Project Path="src/core/petrinets2.core.csproj" />
   </Folder>
