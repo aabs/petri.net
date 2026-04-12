@@ -122,6 +122,22 @@ public class PetriNetBaseProperties
     }
 
     [Property]
+    public bool HotPathConflictCase_AdjacentEnabledMatchesConflictExpectation(PositiveInt branchSeed)
+    {
+        var branchCount = (branchSeed.Get % 32) + 2;
+        var scenario = HotPathAllocationPropertyData.CreateConflictCase(branchCount);
+        var placeId = scenario.ConflictPlaceId;
+
+        var adjacentGraph = scenario.Graph.GetEnabledTransitionsAdjacentToPlace(placeId, scenario.Marking).ToArray();
+        var adjacentMatrix = scenario.Matrix.GetEnabledTransitionsAdjacentToPlace(placeId, scenario.Marking).ToArray();
+
+        return adjacentGraph.Length == branchCount
+            && adjacentMatrix.Length == branchCount
+            && scenario.Graph.PlaceIsConflicted(placeId, scenario.Marking)
+            && scenario.Matrix.PlaceIsConflicted(placeId, scenario.Marking);
+    }
+
+    [Property]
     public bool CreateInitialMarking_UsesAllPlacesCount(NonNull<int[]> markingRaw, NonNull<int[]> graphRaw)
     {
         var scenario = BuildScenario(markingRaw.Item, graphRaw.Item, includeInhibitors: true);

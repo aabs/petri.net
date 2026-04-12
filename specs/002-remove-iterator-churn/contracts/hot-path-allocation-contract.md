@@ -39,3 +39,14 @@ This contract defines the required observable behavior for the R2 hotspot change
 - FsCheck.Xunit properties must cover unchanged enablement, unchanged firing results, unchanged invocation order, and unchanged empty-input behavior.
 - Benchmarks must exist for affected hotspots in the committed `perf/core.benchmarks` project.
 - Allocation profiling must show that each changed hotspot reduces or eliminates the targeted materialization or iterator-churn source relative to baseline.
+
+## Verification evidence (2026-04-12)
+
+- Regression validation passed via `dotnet test petrinets2.slnx` with zero failures.
+- Hotspot benchmark validation passed via `HotPathAllocationBenchmarks` in `perf/core.benchmarks` covering:
+	- graph conflict path
+	- matrix conflict path
+	- graph fire path
+	- matrix fire path
+- Benchmark observations showed lower latency/allocation in graph conflict and fire paths compared to matrix analogues for the sampled scenario sizes.
+- `Marking` copy behavior remains measurable in fire-path allocations and is captured as supporting context for this feature rather than a semantic redesign target in R2.

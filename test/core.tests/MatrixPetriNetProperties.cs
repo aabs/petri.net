@@ -224,6 +224,24 @@ public class MatrixPetriNetProperties
         return callbackCount == steps;
     }
 
+    [Property]
+    public bool HotPathConflictCase_MatrixAndGraphEnablementMatchPerAdjacentTransition(PositiveInt branchSeed)
+    {
+        var branchCount = (branchSeed.Get % 32) + 2;
+        var scenario = HotPathAllocationPropertyData.CreateConflictCase(branchCount);
+        var transitionIds = scenario.Graph.Transitions.Keys.OrderBy(x => x).ToArray();
+
+        foreach (var transitionId in transitionIds)
+        {
+            if (scenario.Graph.IsEnabled(transitionId, scenario.Marking) != scenario.Matrix.IsEnabled(transitionId, scenario.Marking))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     [Fact]
     public void ComplexFlow_RegressionScenario()
     {

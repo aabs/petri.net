@@ -16,4 +16,18 @@ public class GraphPetriNetSelectionProperties
         var marking = TransitionSelectionPropertyData.ToMarking(0, 0, 0, 0);
         return graph.CreateFiringPlan(marking).IsEmpty && graph.GetNextTransitionToFire(marking) is null;
     }
+
+    [Property]
+    public bool HotPathFireCase_GraphEnablementMatchesMatrixAcrossRepeatedChecks(PositiveInt transitionSeed)
+    {
+        var transitionCount = (transitionSeed.Get % 64) + 1;
+        var scenario = HotPathAllocationPropertyData.CreateFireCase(transitionCount);
+
+        var graphEnabledFirst = scenario.Graph.AllEnabledTransitions(scenario.Marking).OrderBy(x => x).ToArray();
+        var graphEnabledSecond = scenario.Graph.AllEnabledTransitions(scenario.Marking).OrderBy(x => x).ToArray();
+        var matrixEnabled = scenario.Matrix.GetEnabledTransitions(scenario.Marking).OrderBy(x => x).ToArray();
+
+        return graphEnabledFirst.SequenceEqual(graphEnabledSecond)
+            && graphEnabledFirst.SequenceEqual(matrixEnabled);
+    }
 }

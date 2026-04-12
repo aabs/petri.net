@@ -11,8 +11,8 @@
 
 **Purpose**: Create the shared scenario and benchmark scaffolding needed to exercise the R2 hotspots reproducibly.
 
-- [ ] T001 Create shared hotspot property data builders in test/core.tests/HotPathAllocationPropertyData.cs
-- [ ] T002 [P] Create shared hotspot benchmark scenario builders in perf/core.benchmarks/HotPathAllocationBenchmarkScenarios.cs
+- [X] T001 Create shared hotspot property data builders in test/core.tests/HotPathAllocationPropertyData.cs
+- [X] T002 [P] Create shared hotspot benchmark scenario builders in perf/core.benchmarks/HotPathAllocationBenchmarkScenarios.cs
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No hotspot implementation work should begin until this phase is complete.
 
-- [ ] T003 Create deterministic benchmark-scenario property coverage in test/core.tests/HotPathAllocationBenchmarkProperties.cs
-- [ ] T004 [P] Create benchmark fixture parity coverage between graph and matrix scenarios in test/core.tests/HotPathAllocationBenchmarkEquivalenceProperties.cs
-- [ ] T005 Create the initial BenchmarkDotNet entry shell and baseline benchmark registration for the R2 conflict and fire hotspots in perf/core.benchmarks/HotPathAllocationBenchmarks.cs
+- [X] T003 Create deterministic benchmark-scenario property coverage in test/core.tests/HotPathAllocationBenchmarkProperties.cs
+- [X] T004 [P] Create benchmark fixture parity coverage between graph and matrix scenarios in test/core.tests/HotPathAllocationBenchmarkEquivalenceProperties.cs
+- [X] T005 Create the initial BenchmarkDotNet entry shell and baseline benchmark registration for the R2 conflict and fire hotspots in perf/core.benchmarks/HotPathAllocationBenchmarks.cs
 
 **Checkpoint**: Shared R2 test data and benchmark scaffolding are ready; hotspot slices can now be implemented with reproducible parity and allocation validation.
 
@@ -40,19 +40,19 @@
 
 > **NOTE: Write these properties FIRST, ensure they FAIL before implementation**
 
-- [ ] T006 [P] [US1] Add FsCheck.Xunit properties for conflict parity and adjacent-enabled parity in test/core.tests/PetriNetBaseProperties.cs
-- [ ] T007 [P] [US1] Add FsCheck.Xunit properties for graph fire-result parity and transition-function invocation-order parity in test/core.tests/GraphPetriNetFireProperties.cs
-- [ ] T008 [P] [US1] Add FsCheck.Xunit properties for matrix fire-result parity and transition-function invocation-order parity in test/core.tests/MatrixPetriNetFiringPlanProperties.cs
-- [ ] T009 [P] [US1] Add FsCheck.Xunit properties for graph and matrix enablement parity under repeated-traversal cases in test/core.tests/GraphPetriNetSelectionProperties.cs and test/core.tests/MatrixPetriNetProperties.cs
+- [X] T006 [P] [US1] Add FsCheck.Xunit properties for conflict parity and adjacent-enabled parity in test/core.tests/PetriNetBaseProperties.cs
+- [X] T007 [P] [US1] Add FsCheck.Xunit properties for graph fire-result parity and transition-function invocation-order parity in test/core.tests/GraphPetriNetFireProperties.cs
+- [X] T008 [P] [US1] Add FsCheck.Xunit properties for matrix fire-result parity and transition-function invocation-order parity in test/core.tests/MatrixPetriNetFiringPlanProperties.cs
+- [X] T009 [P] [US1] Add FsCheck.Xunit properties for graph and matrix enablement parity under repeated-traversal cases in test/core.tests/GraphPetriNetSelectionProperties.cs and test/core.tests/MatrixPetriNetProperties.cs
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Remove the `ToArray()` plus `Count() > 1` conflict path and implement an early-exit non-allocating conflict helper in src/core/PetriNetBase.cs
-- [ ] T011 [P] [US1] Replace hot-path `Where`/`Select` iterator chains with direct loops and local references in src/core/GraphPetriNet.cs
-- [ ] T012 [P] [US1] Replace matrix hot-path enumerable helpers and per-iteration helper-call overhead with explicit loops in src/core/MatrixPetriNet.cs
-- [ ] T013 [US1] Extend hotspot benchmark scenarios for conflict, graph fire, and matrix fire workloads in perf/core.benchmarks/HotPathAllocationBenchmarkScenarios.cs
-- [ ] T014 [US1] Complete BenchmarkDotNet coverage for the R2 conflict and fire hotspots in perf/core.benchmarks/HotPathAllocationBenchmarks.cs using the shared scenario builders and update perf/core.benchmarks/Program.cs if benchmark discovery requires it
-- [ ] T015 [US1] Update R2 behavior and verification notes in specs/002-remove-iterator-churn/contracts/hot-path-allocation-contract.md and specs/002-remove-iterator-churn/quickstart.md once the hotspot properties are green
+- [X] T010 [US1] Remove the `ToArray()` plus `Count() > 1` conflict path and implement an early-exit non-allocating conflict helper in src/core/PetriNetBase.cs
+- [X] T011 [P] [US1] Replace hot-path `Where`/`Select` iterator chains with direct loops and local references in src/core/GraphPetriNet.cs
+- [X] T012 [P] [US1] Replace matrix hot-path enumerable helpers and per-iteration helper-call overhead with explicit loops in src/core/MatrixPetriNet.cs
+- [X] T013 [US1] Extend hotspot benchmark scenarios for conflict, graph fire, and matrix fire workloads in perf/core.benchmarks/HotPathAllocationBenchmarkScenarios.cs
+- [X] T014 [US1] Complete BenchmarkDotNet coverage for the R2 conflict and fire hotspots in perf/core.benchmarks/HotPathAllocationBenchmarks.cs using the shared scenario builders and update perf/core.benchmarks/Program.cs if benchmark discovery requires it
+- [X] T015 [US1] Update R2 behavior and verification notes in specs/002-remove-iterator-churn/contracts/hot-path-allocation-contract.md and specs/002-remove-iterator-churn/quickstart.md once the hotspot properties are green
 
 **Checkpoint**: The R2 hotspots have property-backed parity coverage, benchmark coverage, and concrete allocation-reduction changes in the scoped production files.
 
@@ -62,9 +62,9 @@
 
 **Purpose**: Run full validation, capture evidence, and close the feature with reproducible commands.
 
-- [ ] T016 [P] Record full regression validation for the R2 hotspot files in specs/002-remove-iterator-churn/quickstart.md after running `dotnet test petrinets2.slnx`
-- [ ] T017 [P] Record focused R2 benchmark validation for perf/core.benchmarks/HotPathAllocationBenchmarks.cs in specs/002-remove-iterator-churn/quickstart.md after running `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*HotPathAllocation*|*Conflict*|*Fire*"`
-- [ ] T018 Capture hotspot-specific allocation evidence, record `Marking` copy cost as supporting context, and update specs/002-remove-iterator-churn/quickstart.md and specs/002-remove-iterator-churn/contracts/hot-path-allocation-contract.md
+- [X] T016 [P] Record full regression validation for the R2 hotspot files in specs/002-remove-iterator-churn/quickstart.md after running `dotnet test petrinets2.slnx`
+- [X] T017 [P] Record focused R2 benchmark validation for perf/core.benchmarks/HotPathAllocationBenchmarks.cs in specs/002-remove-iterator-churn/quickstart.md after running `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*HotPathAllocation*|*Conflict*|*Fire*"`
+- [X] T018 Capture hotspot-specific allocation evidence, record `Marking` copy cost as supporting context, and update specs/002-remove-iterator-churn/quickstart.md and specs/002-remove-iterator-churn/contracts/hot-path-allocation-contract.md
 
 ---
 

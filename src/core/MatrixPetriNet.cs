@@ -219,16 +219,36 @@ public class MatrixPetriNet : PetriNetBase
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        return InhibitorsIntoTransition(transitionId).All(ia => m[ia] == 0);
+        for (var placeId = 0; placeId < InMatrix.RowCount; placeId++)
+        {
+            if (ArcIsInhibitor(placeId, transitionId) && m[placeId] != 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     bool AllInArcPlacesHaveMoreTokensThanTheArcWeight(int transitionId, Marking m)
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        var arcs = NonInhibitorsIntoTransition(transitionId);
-        var result = arcs.All(ia => m[ia] >= InMatrix[ia, transitionId]);
-        return result;
+        for (var placeId = 0; placeId < InMatrix.RowCount; placeId++)
+        {
+            var inputWeight = InMatrix[placeId, transitionId];
+            if (inputWeight == 0.0 || double.IsNaN(inputWeight))
+            {
+                continue;
+            }
+
+            if (m[placeId] < inputWeight)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public override bool IsEmptyTransition(int transitionId)
@@ -280,7 +300,13 @@ public class MatrixPetriNet : PetriNetBase
             double delta = 0.0;
             foreach (var transitionId in firingPlan.TransitionIds)
             {
-                delta += OutMatrix[placeId, transitionId] - GetInputDelta(placeId, transitionId);
+                var inputWeight = InMatrix[placeId, transitionId];
+                if (double.IsNaN(inputWeight))
+                {
+                    inputWeight = 0.0;
+                }
+
+                delta += OutMatrix[placeId, transitionId] - inputWeight;
             }
 
             result[placeId] = m[placeId] + (int)delta;
@@ -289,11 +315,6 @@ public class MatrixPetriNet : PetriNetBase
         DispatchFiringPlan(firingPlan, TransitionFunctions);
 
         return result;
-    }
-
-    double GetInputDelta(int placeId, int transitionId)
-    {
-        return ArcIsInhibitor(placeId, transitionId) ? 0.0 : InMatrix[placeId, transitionId];
     }
     #endregion
 

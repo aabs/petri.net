@@ -177,13 +177,16 @@ public class GraphPetriNet : PetriNetBase
     #region accessors
     public override IEnumerable<int> InhibitorsIntoTransition(int transitionId)
     {
-        if (InArcs.ContainsKey(transitionId))
+        if (InArcs.TryGetValue(transitionId, out var inArcs))
         {
-            return from a in InArcs[transitionId]
-                   where a.IsInhibitor
-                   select a.Source;
+            foreach (var arc in inArcs)
+            {
+                if (arc.IsInhibitor)
+                {
+                    yield return arc.Source;
+                }
+            }
         }
-        return new int[] { };
     }
 
     internal IEnumerable<InArc> GetInArcs(int transitionId)
@@ -192,37 +195,48 @@ public class GraphPetriNet : PetriNetBase
         {
             return result;
         }
-        return new InArc[] { };
+        return Array.Empty<InArc>();
     }
 
     internal IEnumerable<OutArc> GetOutArcs(int transitionId)
     {
-        if (!OutArcs.ContainsKey(transitionId))
-            return new OutArc[] { };
-        return OutArcs[transitionId];
+        return OutArcs.TryGetValue(transitionId, out var outArcs)
+            ? outArcs
+            : Array.Empty<OutArc>();
     }
 
     internal IEnumerable<Action<int>> GetTransitionFunctions(int transitionId)
     {
-        if (!TransitionFunctions.ContainsKey(transitionId))
-            return new Action<int>[] { };
-        return TransitionFunctions[transitionId];
+        return TransitionFunctions.TryGetValue(transitionId, out var transitionFunctions)
+            ? transitionFunctions
+            : Array.Empty<Action<int>>();
     }
 
     public override IEnumerable<int> NonInhibitorsIntoTransition(int transitionId)
     {
-        if (!InArcs.ContainsKey(transitionId))
+        if (!InArcs.TryGetValue(transitionId, out var inArcs))
         {
-            return new int[] { };
+            yield break;
         }
-        return GetInArcs(transitionId).Where(x => !x.IsInhibitor).Select(x => x.Source);
+
+        foreach (var arc in inArcs)
+        {
+            if (!arc.IsInhibitor)
+            {
+                yield return arc.Source;
+            }
+        }
     }
 
     public IEnumerable<int> AllEnabledTransitions(Marking m)
     {
-        return (from t in Transitions
-                where IsEnabled(t.Key, m)
-                select t.Key);
+        foreach (var transition in Transitions)
+        {
+            if (IsEnabled(transition.Key, m))
+            {
+                yield return transition.Key;
+            }
+        }
     }
 
     internal List<OutArc> AllSourcePlaces()
@@ -344,8 +358,13 @@ public class GraphPetriNet : PetriNetBase
 
         foreach (var transitionId in firingPlan.TransitionIds)
         {
-            foreach (var place in GetInArcs(transitionId).Where(static x => x.IsInhibitor == false))
+            foreach (var place in GetInArcs(transitionId))
             {
+                if (place.IsInhibitor)
+                {
+                    continue;
+                }
+
                 result[place.Source] = result[place.Source] - place.Weight;
             }
 
@@ -382,11 +401,13 @@ public class GraphPetriNet : PetriNetBase
     }
     public override IEnumerable<int> GetPlaceOutArcs(int placeId)
     {
-        if (PlaceOutArcs.ContainsKey(placeId))
+        if (PlaceOutArcs.TryGetValue(placeId, out var outArcs))
         {
-            return PlaceOutArcs[placeId].Select(x => x.Target);
+            foreach (var outArc in outArcs)
+            {
+                yield return outArc.Target;
+            }
         }
-        return new int[] { };
     }
     public override int GetWeight(int placeid, int transid)
     {
@@ -394,11 +415,15 @@ public class GraphPetriNet : PetriNetBase
         {
             throw new KeyNotFoundException($"Place '{placeid}' has no outgoing arcs.");
         }
-        var outArc = outArcs.FirstOrDefault(x => x.Target == transid);
-        if (outArc != null)
+
+        foreach (var outArc in outArcs)
         {
-            return outArc.Weight;
+            if (outArc.Target == transid)
+            {
+                return outArc.Weight;
+            }
         }
+
         throw new KeyNotFoundException($"No arc exists from place '{placeid}' to transition '{transid}'.");
     }
 

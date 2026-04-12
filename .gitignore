@@ -5,6 +5,8 @@
 
 *.lscache
 *.cs.old
+.DS_Store
+Thumbs.db
 
 # User-specific files
 *.rsuser
