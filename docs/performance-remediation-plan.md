@@ -166,7 +166,7 @@ The fastest high-confidence gains are:
 
 | ID | Recommendation | Impact | Effort | Risk | Confidence | Suggested order |
 |---|---|---|---|---|---|---|
-| R1 | Max-scan transition selection | High | Low | Low | High | 1 |
+| R1 | ~~Max-scan transition selection~~ | High | Low | Low | High | 1 |
 | R2 | Remove hot-path materialization | High | Medium | Medium | High | 2 |
 | R3 | Reverse lookup maps | High | Low | Low | High | 3 |
 | R4 | PNML indexed parse | Medium/High | Medium/High | Medium | Medium | 4 |
