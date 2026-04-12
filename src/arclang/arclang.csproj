@@ -6,8 +6,6 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);CS8605;CS8618;CS8625</NoWarn>
-    <CocoExePath Condition="Exists('$(MSBuildProjectDirectory)/../../tools/coco.exe')">$(MSBuildProjectDirectory)/../../tools/coco.exe</CocoExePath>
-    <CocoExePath Condition="'$(CocoExePath)' == '' and Exists('$(MSBuildProjectDirectory)/../../tools/Coco.exe')">$(MSBuildProjectDirectory)/../../tools/Coco.exe</CocoExePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,16 +20,11 @@
   <Target
     Name="GenerateArclangParser"
     BeforeTargets="BeforeBuild"
-    Condition="'$(CocoExePath)' != ''"
     Inputs="$(MSBuildProjectDirectory)/pnarclang.atg;$(MSBuildProjectDirectory)/Parser.frame;$(MSBuildProjectDirectory)/Scanner.frame"
     Outputs="$(MSBuildProjectDirectory)/Parser.cs;$(MSBuildProjectDirectory)/Scanner.cs">
     <Exec
-      Command="$(CocoExePath) pnarclang.atg"
+      Command="coco pnarclang.atg"
       WorkingDirectory="$(MSBuildProjectDirectory)" />
-  </Target>
-
-  <Target Name="EnsureCocoExists" BeforeTargets="GenerateArclangParser" Condition="'$(CocoExePath)' == ''">
-    <Error Text="Coco executable not found at tools/coco.exe or tools/Coco.exe." />
   </Target>
 
 </Project>

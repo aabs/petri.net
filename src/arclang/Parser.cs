@@ -28,8 +28,8 @@ public partial class Parser {
 	public const int _listSep = 14;
 	public const int maxT = 18;
 
-	const bool T = true;
-	const bool x = false;
+	const bool _T = true;
+	const bool _x = false;
 	const int minErrDist = 2;
 	
 	public Scanner scanner;
@@ -132,7 +132,7 @@ public CreatePetriNet Builder { get; set; }
 				DstName(ref dst);
 				List<string> t = isInArc ? dst : src;
 				List<string> p = isInArc ? src : dst;
-				                           Builder.GenerateArc(p,t,weight,isInhibitor, isInArc);
+				                          Builder.GenerateArc(p,t,weight,isInhibitor, isInArc);
 				
 			}
 			Expect(11);
@@ -144,7 +144,7 @@ public CreatePetriNet Builder { get; set; }
 			DstName(ref dst);
 			List<string> t = isInArc ? dst : src;
 			List<string> p = isInArc ? src : dst;
-			                           Builder.GenerateArc(p,t,weight,isInhibitor, isInArc);
+			                          Builder.GenerateArc(p,t,weight,isInhibitor, isInArc);
 			
 			Expect(11);
 		} else SynErr(19);
@@ -258,12 +258,13 @@ public CreatePetriNet Builder { get; set; }
 		la.val = "";		
 		Get();
 		PetriNetSpec();
+		Expect(0);
 
     Expect(0);
 	}
 	
 	static readonly bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x}
+		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x}
 
 	};
 } // end Parser
@@ -329,4 +330,3 @@ public class Errors {
 public class FatalError: Exception {
 	public FatalError(string m): base(m) {}
 }
-
