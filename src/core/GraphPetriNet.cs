@@ -303,16 +303,18 @@ public class GraphPetriNet : PetriNetBase
 
     #region net execution
 
+    public FiringPlan CreateFiringPlan(Marking m)
+    {
+        ArgumentNullException.ThrowIfNull(m);
+
+        return BuildFiringPlan(AllEnabledTransitions(m), IsConflicted(m), GetTransitionPriority);
+    }
+
     public int? GetNextTransitionToFire(Marking m)
     {
-        var ets = AllEnabledTransitions(m);
-        if (ets.Count()< 1)
-        {
-            return null;
-        }
-        return (from t in ets
-                orderby GetTransitionPriority(t) descending
-                select t).First();
+        ArgumentNullException.ThrowIfNull(m);
+
+        return TransitionSelection.SelectHighestPriority(AllEnabledTransitions(m), GetTransitionPriority);
     }
 
     public override bool IsEmptyTransition(int transitionId)
@@ -335,21 +337,25 @@ public class GraphPetriNet : PetriNetBase
         ArgumentNullException.ThrowIfNull(m);
 
         var result = new Marking(m);
-        int? transitionId = GetNextTransitionToFire(m);
-        
-        if (!transitionId.HasValue)
+        var firingPlan = CreateFiringPlan(m);
+
+        if (firingPlan.IsEmpty)
             return result;
 
-        int tran = transitionId.Value;
+        foreach (var transitionId in firingPlan.TransitionIds)
+        {
+            foreach (var place in GetInArcs(transitionId).Where(static x => x.IsInhibitor == false))
+            {
+                result[place.Source] = result[place.Source] - place.Weight;
+            }
 
-        foreach (var place in GetInArcs(tran).Where(x => x.IsInhibitor == false))
-            result[place.Source] = m[place.Source] - GetWeight(place.Source, tran);
+            foreach (var arc in GetOutArcs(transitionId))
+            {
+                result[arc.Target] = result[arc.Target] + arc.Weight;
+            }
+        }
 
-        foreach (var arc in GetOutArcs(tran))
-            result[arc.Target] = result[arc.Target] + arc.Weight;
-
-        if (TransitionFunctions.ContainsKey(tran))
-            TransitionFunctions[tran].ForEach(a => a(tran));
+        DispatchFiringPlan(firingPlan, TransitionFunctions);
 
         return result;
     }

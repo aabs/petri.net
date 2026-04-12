@@ -2,7 +2,7 @@
 
 ## Scope
 
-This contract defines the required observable behavior of `GetNextTransitionToFire(Marking m)` for both `GraphPetriNet` and `MatrixPetriNet`.
+This contract defines the required observable behavior of `GetNextTransitionToFire(Marking m)` and the shared firing-plan dispatch model for both `GraphPetriNet` and `MatrixPetriNet`.
 
 ## Inputs
 
@@ -13,6 +13,7 @@ This contract defines the required observable behavior of `GetNextTransitionToFi
 
 - Returns `int?` identifying the selected transition.
 - Returns `null` when no transition is enabled for the supplied marking.
+- Shared firing-plan dispatch invokes transition handlers in the canonical order defined by the firing plan.
 
 ## Behavioral Rules
 
@@ -21,16 +22,18 @@ This contract defines the required observable behavior of `GetNextTransitionToFi
 3. If multiple enabled transitions share the highest effective priority, the first transition encountered in the net's enabled-transition enumeration order must be selected.
 4. A transition with no explicit priority entry must be treated as priority `0`.
 5. Calling `GetNextTransitionToFire` must not mutate the supplied `Marking` or modify net structure.
+6. Dispatching an empty firing plan must invoke no transition handlers.
+7. Dispatching a non-empty firing plan must invoke the handlers for exactly the transitions in the plan, in plan order.
 
 ## Compatibility Requirements
 
 - The public method signature must remain `GetNextTransitionToFire(Marking m)`.
 - Observable behavior must remain equivalent to the pre-change LINQ-based implementation.
-- `MatrixPetriNet.CreateFiringPlan` and `GraphPetriNet.Fire` must continue to behave identically for equivalent inputs.
+- `MatrixPetriNet.CreateFiringPlan`, `GraphPetriNet.CreateFiringPlan`, and both `Fire` methods must continue to behave identically for equivalent inputs.
 - Contract expression for this feature must rely on idiomatic C# mechanisms and must not introduce new deprecated Code Contracts usage.
 
 ## Verification
 
-- FsCheck.Xunit properties must cover highest-priority selection, equal-priority ties, empty enabled sets, and default-zero priority behavior.
+- FsCheck.Xunit properties must cover highest-priority selection, equal-priority ties, empty enabled sets, default-zero priority behavior, and dispatcher ordering/handler-equivalence behavior.
 - Each property must describe an invariant over generated inputs rather than a single canned example.
 - Microbenchmarks must exist for both graph and matrix implementations and be runnable from source control.

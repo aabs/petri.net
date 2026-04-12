@@ -20,10 +20,10 @@ dotnet restore petrinets2.slnx
 dotnet test petrinets2.slnx
 ```
 
-3. Run focused tests for transition selection parity once they exist.
+3. Run focused tests for transition selection and shared dispatcher parity once they exist.
 
 ```bash
-dotnet test test/core.tests/core.tests.csproj --filter "GetNextTransitionToFire|TransitionSelection|Priority"
+dotnet test test/core.tests/core.tests.csproj --filter "GetNextTransitionToFire|TransitionSelection|FiringPlan|Dispatcher|Priority"
 ```
 
 4. During implementation, write the FsCheck.Xunit properties first and confirm they fail before changing production code.
@@ -37,5 +37,5 @@ dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- -
 ## Expected outcomes
 
 - All existing tests pass unchanged.
-- FsCheck.Xunit properties covering highest-priority, tie, null, and default-priority behavior pass for both `GraphPetriNet` and `MatrixPetriNet`.
+- FsCheck.Xunit properties covering highest-priority, tie, null, firing-plan equivalence, dispatcher ordering, and default-priority behavior pass for both `GraphPetriNet` and `MatrixPetriNet`.
 - Benchmark output shows at least 20% lower CPU per selection call and no allocation regression.
