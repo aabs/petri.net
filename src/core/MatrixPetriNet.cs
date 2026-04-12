@@ -1,15 +1,4 @@
-﻿/*
- * Created by SharpDevelop.
- * User: Andrew Matthews
- * Date: 12/08/2009
- * Time: 9:11 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Diagnostics.Contracts;
 
@@ -255,7 +244,7 @@ public class MatrixPetriNet : PetriNetBase
         // if the result is greater than or equal to zero then the transition is enabled
         for (int i = 0; i < OutMatrix.ColumnCount; i++)
         {
-            if (IsEnabled(i,m))
+            if (IsEnabled(i, m))
                 yield return i;
         }
     }
@@ -315,6 +304,7 @@ public class MatrixPetriNet : PetriNetBase
         return result;
     }
     #endregion
+
     [ContractInvariantMethod]
     protected void ObjectInvariant()
     {
