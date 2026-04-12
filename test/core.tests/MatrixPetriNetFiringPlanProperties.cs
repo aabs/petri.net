@@ -20,4 +20,38 @@ public class MatrixPetriNetFiringPlanProperties
 
         return plan.TransitionIds.SequenceEqual(new[] { 0, 1 });
     }
+
+    [Property]
+    public bool HotPathFireCase_MatrixMatchesGraphMarkingResult(PositiveInt transitionSeed)
+    {
+        var transitionCount = (transitionSeed.Get % 64) + 1;
+        var scenario = HotPathAllocationPropertyData.CreateFireCase(transitionCount);
+
+        var graphResult = scenario.Graph.Fire(scenario.Marking);
+        var matrixResult = scenario.Matrix.Fire(scenario.Marking);
+
+        return HotPathAllocationPropertyData.Snapshot(graphResult).SequenceEqual(HotPathAllocationPropertyData.Snapshot(matrixResult));
+    }
+
+    [Property]
+    public bool HotPathFireCase_MatrixInvocationOrderMatchesGraph(PositiveInt transitionSeed)
+    {
+        var transitionCount = (transitionSeed.Get % 64) + 1;
+        var scenario = HotPathAllocationPropertyData.CreateFireCase(transitionCount);
+
+        var graphCalls = new List<int>();
+        var matrixCalls = new List<int>();
+
+        foreach (var transitionId in scenario.Graph.Transitions.Keys)
+        {
+            var captured = transitionId;
+            scenario.Graph.RegisterFunction(captured, id => graphCalls.Add(id));
+            scenario.Matrix.RegisterFunction(captured, id => matrixCalls.Add(id));
+        }
+
+        _ = scenario.Graph.Fire(scenario.Marking);
+        _ = scenario.Matrix.Fire(scenario.Marking);
+
+        return graphCalls.SequenceEqual(matrixCalls);
+    }
 }

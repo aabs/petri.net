@@ -19,14 +19,32 @@ public abstract class PetriNetBase
     }
     public bool PlaceIsConflicted(int placeId, Marking m)
     {
-        return GetEnabledTransitionsAdjacentToPlace(placeId, m).Count() > 1;
+        var enabledCount = 0;
+        foreach (var transitionId in GetPlaceOutArcs(placeId))
+        {
+            if (!IsEnabled(transitionId, m))
+            {
+                continue;
+            }
+
+            enabledCount++;
+            if (enabledCount > 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     public IEnumerable<int> GetEnabledTransitionsAdjacentToPlace(int placeId, Marking m)
     {
-        var q = (from outArc in GetPlaceOutArcs(placeId)
-                 where IsEnabled(outArc, m)
-                 select outArc).ToArray();
-        return q;
+        foreach (var transitionId in GetPlaceOutArcs(placeId))
+        {
+            if (IsEnabled(transitionId, m))
+            {
+                yield return transitionId;
+            }
+        }
     }
     public bool IsEnabled(int transitionId, Marking m)
     {

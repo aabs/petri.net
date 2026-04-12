@@ -5,6 +5,8 @@
 
 *.lscache
 *.cs.old
+.DS_Store
+Thumbs.db
 
 # User-specific files
 *.rsuser
@@ -429,3 +431,4 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+.github/skills/instructions-blueprint-generator/SKILL.md

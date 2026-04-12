@@ -24,4 +24,27 @@ public class GraphPetriNetFireProperties
         return TransitionSelectionPropertyData.Snapshot(graphResult).SequenceEqual(TransitionSelectionPropertyData.Snapshot(matrixResult))
             && graphCalls.SequenceEqual(matrixCalls);
     }
+
+    [Property]
+    public bool HotPathFireCase_FireParityAndInvocationOrderArePreserved(PositiveInt transitionSeed)
+    {
+        var transitionCount = (transitionSeed.Get % 64) + 1;
+        var scenario = HotPathAllocationPropertyData.CreateFireCase(transitionCount);
+
+        var graphCalls = new List<int>();
+        var matrixCalls = new List<int>();
+
+        foreach (var transitionId in scenario.Graph.Transitions.Keys)
+        {
+            var captured = transitionId;
+            scenario.Graph.RegisterFunction(captured, id => graphCalls.Add(id));
+            scenario.Matrix.RegisterFunction(captured, id => matrixCalls.Add(id));
+        }
+
+        var graphResult = scenario.Graph.Fire(scenario.Marking);
+        var matrixResult = scenario.Matrix.Fire(scenario.Marking);
+
+        return HotPathAllocationPropertyData.Snapshot(graphResult).SequenceEqual(HotPathAllocationPropertyData.Snapshot(matrixResult))
+            && graphCalls.SequenceEqual(matrixCalls);
+    }
 }
