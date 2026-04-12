@@ -137,8 +137,10 @@ var matrixNets = matrixLoader.Load("model.pnml").ToList();
 
 ## Notes On Current Direction
 
-- Runtime target is `net10.0`.
-- Tests include both unit and property-based checks.
+- Runtime target is idiomatic C# 14 on `net10.0`.
+- Correctness is the primary design objective; performance work follows once behavior is preserved and measurable.
+- Tests are property-based and use FsCheck with FsCheck.Xunit under red-green-refactor discipline.
+- Method contracts should be expressed with idiomatic C# constructs rather than the deprecated Code Contracts library.
 - The repository includes performance remediation notes in `docs/performance-remediation-plan.md`.
 
 If you are migrating from the 2009 codebase, start by defining one net with `CreatePetriNet`, then instantiate both models and compare behavior under the same marking progression.
