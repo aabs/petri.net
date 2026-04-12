@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/core/petrinets2.core.csproj" />
     <ProjectReference Include="../../src/arclang/arclang.csproj" />
+    <ProjectReference Include="../../perf/core.benchmarks/core.benchmarks.csproj" />
   </ItemGroup>
 
   <ItemGroup>

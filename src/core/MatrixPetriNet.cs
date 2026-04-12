@@ -98,7 +98,7 @@ public class MatrixPetriNet : PetriNetBase
 
             foreach (var inArc in transitionInArcs.Value)
             {
-                InMatrix[inArc.Source, transitionInArcs.Key] = inArc.Weight;
+                InMatrix[inArc.Source, transitionInArcs.Key] = inArc.IsInhibitor ? double.NaN : inArc.Weight;
             }
         }
 
@@ -249,59 +249,51 @@ public class MatrixPetriNet : PetriNetBase
         }
     }
 
-    Vector<double> CreateFiringPlan(Marking m)
+    public FiringPlan CreateFiringPlan(Marking m)
     {
-        var result = new SparseVector(Transitions.Count);
-        if (IsConflicted(m))
-        {
-            var next = GetNextTransitionToFire(m);
-            if (next.HasValue)
-                result[next.Value] = 1.0;
-        }
-        else
-        {
-            foreach (var transId in GetEnabledTransitions(m))
-            {
-                result[transId] = 1;
-            }
-        }
-        return result;
+        ArgumentNullException.ThrowIfNull(m);
+
+        return BuildFiringPlan(GetEnabledTransitions(m), IsConflicted(m), GetTransitionPriority);
     }
 
     public int? GetNextTransitionToFire(Marking m)
     {
-        var ets = GetEnabledTransitions(m);
-        return (from t in ets
-                orderby GetTransitionPriority(t) descending
-                select t).FirstOrDefault();
+        ArgumentNullException.ThrowIfNull(m);
+
+        return TransitionSelection.SelectHighestPriority(GetEnabledTransitions(m), GetTransitionPriority);
     }
 
     public virtual Marking Fire(Marking m)
     {
-        var firingTransitions = GetEnabledTransitions(m).ToList(); // no laziness here, since enabled trans will change after the flow equation has been evaluated
+        ArgumentNullException.ThrowIfNull(m);
+
         var result = new Marking(m);
         var firingPlan = CreateFiringPlan(m);
+
+        if (firingPlan.IsEmpty)
+        {
+            return result;
+        }
 
         for (int placeId = 0; placeId < Places.Count; placeId++)
         {
             double delta = 0.0;
-            for (int transitionId = 0; transitionId < Transitions.Count; transitionId++)
+            foreach (var transitionId in firingPlan.TransitionIds)
             {
-                if (firingPlan[transitionId] == 0.0)
-                    continue;
-
-                delta += (OutMatrix[placeId, transitionId] - InMatrix[placeId, transitionId]) * firingPlan[transitionId];
+                delta += OutMatrix[placeId, transitionId] - GetInputDelta(placeId, transitionId);
             }
 
             result[placeId] = m[placeId] + (int)delta;
         }
 
-        foreach (var transId in firingTransitions)
-        {
-            if (TransitionFunctions.ContainsKey(transId))
-                TransitionFunctions[transId].ForEach(a => a(transId));
-        }
+        DispatchFiringPlan(firingPlan, TransitionFunctions);
+
         return result;
+    }
+
+    double GetInputDelta(int placeId, int transitionId)
+    {
+        return ArcIsInhibitor(placeId, transitionId) ? 0.0 : InMatrix[placeId, transitionId];
     }
     #endregion
 

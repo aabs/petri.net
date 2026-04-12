@@ -50,4 +50,14 @@ public abstract class PetriNetBase
         return result;
     }
 
+    protected static FiringPlan BuildFiringPlan(IEnumerable<int> enabledTransitions, bool isConflicted, Func<int, int> getTransitionPriority)
+    {
+        return FiringPlanner.Create(enabledTransitions, isConflicted, getTransitionPriority);
+    }
+
+    protected static void DispatchFiringPlan(FiringPlan firingPlan, IReadOnlyDictionary<int, List<Action<int>>> transitionFunctions)
+    {
+        FiringPlanDispatcher.Dispatch(firingPlan, transitionFunctions);
+    }
+
 }

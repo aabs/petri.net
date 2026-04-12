@@ -31,7 +31,11 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Confirm the plan targets idiomatic C# 14 on .NET 10.
+- Confirm correctness-preserving behavior and contract expectations are explicit before any performance work.
+- Confirm the design includes property-based testing with FsCheck/FsCheck.Xunit under red-green-refactor discipline.
+- Confirm planned properties describe behavioral classes or invariants rather than single canned examples.
+- Confirm method contracts will be expressed with idiomatic C# mechanisms, not new Code Contracts usage.
 
 ## Project Structure
 
@@ -102,3 +106,5 @@ directories captured above]
 |-----------|------------|-------------------------------------|
 | [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
 | [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+
+If no constitution violations exist, remove this table and state that none were required.
