@@ -243,10 +243,9 @@ When generating code here:
 <!-- MANUAL ADDITIONS END -->
 
 ## Active Technologies
-- C# 14 on .NET 10 (`net10.0`) + `MathNet.Numerics` (core), `FsCheck` + `FsCheck.Xunit` + `xUnit` (tests), `BenchmarkDotNet` (perf) (003-reverse-lookup-maps)
 - N/A (in-memory dictionaries and PNML file input) (003-reverse-lookup-maps)
-- N/A (in-memory markings and incidence structures) (005-redesign-sparse-matrix-kernel)
-- C# 14 on .NET 10 (`net10.0`) + `MathNet.Numerics` (core), `FsCheck` + `FsCheck.Xunit` + `xUnit` (tests), `BenchmarkDotNet` (perf), internal retry policy implementation using `Microsoft.Extensions.Resilience` (005-scratch-buffer-pooling)
+- C# 14 on .NET 10 (`net10.0`) + BCL `System.Xml.XmlReader`, core library `MathNet.Numerics`, tests `FsCheck` + `FsCheck.Xunit` + `xUnit`, perf `BenchmarkDotNet` (004-sax-pnml-loader)
+- N/A (file-based PNML parsing, in-memory net construction) (004-sax-pnml-loader)
 - N/A (in-memory markings, transition-selection scratch, and fire-delta scratch) (005-scratch-buffer-pooling)
 
 ## Recent Changes

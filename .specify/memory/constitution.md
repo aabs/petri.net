@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report
-Version change: template -> 1.0.0
+Version change: 1.0.0 -> 1.1.0
 Modified principles:
 - [PRINCIPLE_1_NAME] -> I. C# 14 and .NET 10 First
 - [PRINCIPLE_2_NAME] -> II. Correctness Before Performance
@@ -53,6 +53,7 @@ Rationale: The project needs design-by-contract clarity, but the old Code Contra
 ## Engineering Standards
 
 - Features MUST specify contract-sensitive behavior before implementation, including null behavior, tie-breaking, invariants, and failure modes where relevant.
+- User stories in feature specifications MUST represent independent user-value journeys. Conformance checks, test-pass obligations, and quality gates MUST be expressed as acceptance scenarios, functional requirements, or success criteria, not as standalone user stories unless they independently deliver user value.
 - Performance-oriented changes MUST include measurable acceptance criteria and reproducible benchmark evidence when performance is part of the feature goal.
 - New abstractions MUST justify themselves in terms of correctness, clarity, or measured performance. Convenience layering alone is insufficient.
 - API compatibility MUST be preserved unless a feature spec explicitly authorizes a breaking change and includes a migration plan.
@@ -68,4 +69,4 @@ Rationale: The project needs design-by-contract clarity, but the old Code Contra
 
 This constitution supersedes conflicting local conventions and planning defaults inside this repository. Amendments require: (1) a documented rationale, (2) updates to affected templates and guidance files, and (3) an explicit semantic version increment recorded in this document. Versioning rules are: MAJOR for incompatible governance changes or removals of principles, MINOR for new principles or materially expanded guidance, and PATCH for wording clarifications that do not change repository obligations. Compliance review is required for every spec, plan, tasks file, and code review touching repository standards. Runtime guidance for day-to-day work lives in `.github/copilot-instructions.md` and MUST remain consistent with this constitution.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-12 | **Last Amended**: 2026-04-12
+**Version**: 1.1.0 | **Ratified**: 2026-04-12 | **Last Amended**: 2026-04-13

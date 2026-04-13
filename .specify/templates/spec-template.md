@@ -10,6 +10,23 @@
 Each scenario MUST define an independently testable technical capability slice.
 
 For internal architecture or refactoring work, actors may be maintainers, release engineers, benchmark operators, or integration harnesses rather than end users.
+Each story MUST be framed so its correctness can be validated by property-based tests that capture classes of behavior or invariants. If a story cannot yet be validated that way, refine the story until the required behavioral properties are clear.
+User stories MUST represent independent user-value journeys. Conformance checks, test-pass obligations, and quality gates belong in acceptance scenarios, functional requirements, or success criteria unless they independently deliver user value.
+
+<!--
+  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
+  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
+  you should still have a viable MVP (Minimum Viable Product) that delivers value.
+  Do NOT create standalone user stories only for compatibility/conformance/testing obligations;
+  capture those in acceptance scenarios, requirements, and success criteria.
+  
+  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
+  Think of each story as a standalone slice of functionality that can be:
+  - Developed independently
+  - Tested independently
+  - Deployed independently
+  - Demonstrated to users independently
+-->
 
 Each capability slice MUST:
 - Capture behavioral invariants and contracts.
