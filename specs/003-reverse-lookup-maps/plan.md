@@ -113,3 +113,18 @@ Output artifacts: `data-model.md`, `contracts/reverse-lookup-contract.md`, `quic
 ## Complexity Tracking
 
 No constitution violations were required for this plan.
+
+## Implementation Status (2026-04-13)
+
+- Reverse lookup maps implemented in `CreatePetriNet` with synchronized O(1) lookups and duplicate checks.
+- PNML loader place-id resolution moved to lookup maps for `Load` and `LoadMarkings`.
+- Property-based coverage added for builder reverse-lookup invariants and PNML lookup behavior.
+- Reverse-lookup benchmark scenarios and harness added and registered in benchmark program entrypoint.
+
+## Completion Checklist
+
+- [x] Reverse-map construction and lookup behavior implemented.
+- [x] Duplicate detection moved from value scans to reverse-map key lookups.
+- [x] PNML load and marking place-id lookup map behavior implemented.
+- [x] Property-based tests and benchmark scaffolding added.
+- [x] Validation commands executed and outcomes recorded in `quickstart.md`.

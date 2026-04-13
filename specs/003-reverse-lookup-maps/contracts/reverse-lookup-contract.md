@@ -14,6 +14,7 @@ This contract defines externally observable behavior and internal invariants for
   - For each unseen name, append one new sequential index to `Places`.
   - Insert matching reverse entry into `_placesByName` in the same mutation step.
   - Duplicate names are ignored.
+  - Duplicate detection uses `_placesByName.ContainsKey(...)` and does not scan `Places.Values`.
 - Output:
   - Returns the same builder instance.
 - Failure modes:
@@ -27,6 +28,7 @@ This contract defines externally observable behavior and internal invariants for
   - For each unseen name, append one new sequential index to `Transitions`.
   - Insert matching reverse entry into `_transitionsByName` in the same mutation step.
   - Duplicate names are ignored.
+  - Duplicate detection uses `_transitionsByName.ContainsKey(...)` and does not scan `Transitions.Values`.
 - Output:
   - Returns the same builder instance.
 - Failure modes:
@@ -58,6 +60,7 @@ This contract defines externally observable behavior and internal invariants for
 
 - `Places` and `_placesByName` remain bijectively consistent.
 - `Transitions` and `_transitionsByName` remain bijectively consistent.
+- Lookup and mutation paths that touch these maps are synchronized so reverse and forward maps are observed atomically during concurrent `PlaceIndex`/`TransitionIndex`/arc-add calls.
 - Public API signatures remain unchanged.
 
 ## PNML Loader Contract (`PnmlModelLoader`)
@@ -81,3 +84,4 @@ This contract defines externally observable behavior and internal invariants for
 - No change to public builder fluent surface or signatures.
 - No behavioral change to firing semantics, ordering semantics, or graph/matrix parity.
 - No expansion of deprecated `System.Diagnostics.Contracts` usage.
+- Clone/serialize pathways remain out of scope in this feature; if introduced later, reverse maps must be reconstructed from forward maps when deserializing or cloning.

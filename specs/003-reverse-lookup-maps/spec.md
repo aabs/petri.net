@@ -109,3 +109,8 @@ When performance is a goal, the correctness-preserving boundary comes first: the
 - PNML-loaded nets only use `GraphPetriNet` as of the current loader; the reverse map approach generalizes to `MatrixPetriNet` if that loader path is added later.
 - `CreatePetriNet.Places` and `CreatePetriNet.Transitions` are `public` mutable properties. The reverse maps will be maintained as internal fields to avoid exposing additional mutable state through the public API. Callers who directly mutate `Places` or `Transitions` outside the builder methods are considered to be violating the builder contract and are out of scope.
 - Benchmark scenarios for large net construction must be committed to `perf/core.benchmarks` and be deterministic and reproducible from source control.
+
+## Out-of-Scope Confirmation
+
+- Clone and serialize behavior for `CreatePetriNet` is intentionally out of scope for this feature.
+- Future clone/serialize pathways MUST reconstruct reverse lookup maps from forward maps (`Places`, `Transitions`) when persisted reverse maps are absent.

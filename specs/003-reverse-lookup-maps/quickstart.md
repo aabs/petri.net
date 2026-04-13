@@ -29,6 +29,12 @@ dotnet build petrinets2.slnx
 dotnet test petrinets2.slnx
 ```
 
+If local parser generation tooling is unavailable for `src/arclang`, run the regression suite from existing build outputs:
+
+```bash
+dotnet test --no-build petrinets2.slnx
+```
+
 Focus checks:
 - New reverse-map invariants (forward <-> reverse consistency)
 - Existing graph/matrix parity properties
@@ -38,6 +44,12 @@ Focus checks:
 
 ```bash
 dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*Construction*|*Pnml*|*TransitionSelection*"
+```
+
+Feature-focused benchmark run:
+
+```bash
+dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*ReverseLookup*"
 ```
 
 Validate:
@@ -58,3 +70,16 @@ Validate:
 - New/updated property-based tests
 - New/updated benchmarks with reproducible scenarios
 - Evidence summary for SC-001 through SC-006
+
+## 7. Evidence Expectations
+
+- SC-002: include construction benchmark medians for graph and matrix reverse-lookup paths at large parameters.
+- SC-003: include PNML load and marking benchmark medians for reverse-lookup paths at large parameters.
+- SC-006: include bytes/op and Gen0 columns from `ReverseLookupBenchmarks` and compare against baseline snapshots.
+
+## 8. Latest Validation Snapshot (2026-04-13)
+
+- `dotnet build petrinets2.slnx`: failed in `src/arclang` because `coco pnarclang.atg` exited with code 150; `src/core` and `perf/core.benchmarks` built successfully.
+- `dotnet test petrinets2.slnx`: blocked by the same `arclang` build failure.
+- `dotnet test --no-build petrinets2.slnx`: passed regression suite (223 total, 222 passed, 0 failed, 1 skipped).
+- `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*ReverseLookup*"`: succeeded and produced reverse-lookup benchmark measurements.

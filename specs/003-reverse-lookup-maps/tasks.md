@@ -11,9 +11,9 @@
 
 **Purpose**: Create shared scaffolding for deterministic property generation and benchmark scenarios.
 
-- [ ] T001 Create reverse-lookup property scenario builders in test/core.tests/ReverseLookupPropertyData.cs
-- [ ] T002 [P] Create construction benchmark scenario builders in perf/core.benchmarks/ReverseLookupConstructionBenchmarkScenarios.cs
-- [ ] T003 [P] Create PNML benchmark scenario builders in perf/core.benchmarks/PnmlLoadBenchmarkScenarios.cs
+- [X] T001 Create reverse-lookup property scenario builders in test/core.tests/ReverseLookupPropertyData.cs
+- [X] T002 [P] Create construction benchmark scenario builders in perf/core.benchmarks/ReverseLookupConstructionBenchmarkScenarios.cs
+- [X] T003 [P] Create PNML benchmark scenario builders in perf/core.benchmarks/PnmlLoadBenchmarkScenarios.cs
 
 ---
 
@@ -23,10 +23,10 @@
 
 **CRITICAL**: No user story implementation should begin until this phase is complete.
 
-- [ ] T004 Create shared reverse-lookup benchmark harness shell with MemoryDiagnoser in perf/core.benchmarks/ReverseLookupBenchmarks.cs
-- [ ] T005 [P] Register reverse-lookup benchmarks in perf/core.benchmarks/Program.cs
-- [ ] T006 [P] Register reverse-lookup FsCheck arbitraries in test/core.tests/globals.cs
-- [ ] T007 Create benchmark-scenario parity properties for shared construction/PNML fixtures in test/core.tests/ReverseLookupBenchmarkProperties.cs
+- [X] T004 Create shared reverse-lookup benchmark harness shell with MemoryDiagnoser in perf/core.benchmarks/ReverseLookupBenchmarks.cs
+- [X] T005 [P] Register reverse-lookup benchmarks in perf/core.benchmarks/Program.cs
+- [X] T006 [P] Register reverse-lookup FsCheck arbitraries in test/core.tests/globals.cs
+- [X] T007 Create benchmark-scenario parity properties for shared construction/PNML fixtures in test/core.tests/ReverseLookupBenchmarkProperties.cs
 
 **Checkpoint**: Shared property and benchmark infrastructure is ready for independent user story delivery.
 
@@ -40,18 +40,18 @@
 
 ### Tests for User Story 1
 
-- [ ] T008 [P] [US1] Add FsCheck.Xunit property for place lookup parity with forward map in test/core.tests/CreatePetriNetReverseLookupProperties.cs
-- [ ] T009 [P] [US1] Add FsCheck.Xunit property for transition lookup parity with forward map in test/core.tests/CreatePetriNetReverseLookupProperties.cs
-- [ ] T010 [P] [US1] Add FsCheck.Xunit property for missing-name failure contracts in test/core.tests/CreatePetriNetReverseLookupProperties.cs
-- [ ] T034 [P] [US1] Add FsCheck.Xunit property for concurrent `PlaceIndex`/`TransitionIndex` and arc-add consistency in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T008 [P] [US1] Add FsCheck.Xunit property for place lookup parity with forward map in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T009 [P] [US1] Add FsCheck.Xunit property for transition lookup parity with forward map in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T010 [P] [US1] Add FsCheck.Xunit property for missing-name failure contracts in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T034 [P] [US1] Add FsCheck.Xunit property for concurrent `PlaceIndex`/`TransitionIndex` and arc-add consistency in test/core.tests/CreatePetriNetReverseLookupProperties.cs
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Add `_placesByName` and `_transitionsByName` state initialization in src/core/builders/CreatePetriNet.cs
-- [ ] T012 [US1] Implement guard-based O(1) `PlaceIndex` and `TransitionIndex` lookups in src/core/builders/CreatePetriNet.cs
-- [ ] T013 [US1] Add reverse-map rebuild/synchronization helper for forward-map consistency paths in src/core/builders/CreatePetriNet.cs
-- [ ] T035 [US1] Add synchronization strategy for concurrent lookup/mutation paths in src/core/builders/CreatePetriNet.cs
-- [ ] T014 [US1] Update builder lookup contract notes for missing-name and concurrency behavior in specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
+- [X] T011 [US1] Add `_placesByName` and `_transitionsByName` state initialization in src/core/builders/CreatePetriNet.cs
+- [X] T012 [US1] Implement guard-based O(1) `PlaceIndex` and `TransitionIndex` lookups in src/core/builders/CreatePetriNet.cs
+- [X] T013 [US1] Add reverse-map rebuild/synchronization helper for forward-map consistency paths in src/core/builders/CreatePetriNet.cs
+- [X] T035 [US1] Add synchronization strategy for concurrent lookup/mutation paths in src/core/builders/CreatePetriNet.cs
+- [X] T014 [US1] Update builder lookup contract notes for missing-name and concurrency behavior in specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
 
 **Checkpoint**: User Story 1 is independently functional and testable with property evidence for constant-time name resolution behavior.
 
@@ -65,16 +65,16 @@
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] Add FsCheck.Xunit property for `WithPlaces` duplicate-ignore and index-stability invariants in test/core.tests/CreatePetriNetReverseLookupProperties.cs
-- [ ] T016 [P] [US2] Add FsCheck.Xunit property for `WithTransitions` duplicate-ignore and index-stability invariants in test/core.tests/CreatePetriNetReverseLookupProperties.cs
-- [ ] T017 [P] [US2] Add FsCheck.Xunit property for forward/reverse map bijection after mixed builder operations in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T015 [P] [US2] Add FsCheck.Xunit property for `WithPlaces` duplicate-ignore and index-stability invariants in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T016 [P] [US2] Add FsCheck.Xunit property for `WithTransitions` duplicate-ignore and index-stability invariants in test/core.tests/CreatePetriNetReverseLookupProperties.cs
+- [X] T017 [P] [US2] Add FsCheck.Xunit property for forward/reverse map bijection after mixed builder operations in test/core.tests/CreatePetriNetReverseLookupProperties.cs
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Replace place duplicate detection with `_placesByName` key lookup in src/core/builders/CreatePetriNet.cs
-- [ ] T019 [US2] Replace transition duplicate detection with `_transitionsByName` key lookup in src/core/builders/CreatePetriNet.cs
-- [ ] T020 [US2] Ensure reverse and forward map updates happen atomically within insertion loops in src/core/builders/CreatePetriNet.cs
-- [ ] T021 [US2] Update duplicate-detection contract details in specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
+- [X] T018 [US2] Replace place duplicate detection with `_placesByName` key lookup in src/core/builders/CreatePetriNet.cs
+- [X] T019 [US2] Replace transition duplicate detection with `_transitionsByName` key lookup in src/core/builders/CreatePetriNet.cs
+- [X] T020 [US2] Ensure reverse and forward map updates happen atomically within insertion loops in src/core/builders/CreatePetriNet.cs
+- [X] T021 [US2] Update duplicate-detection contract details in specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
 
 **Checkpoint**: User Story 2 is independently functional and testable with O(1) duplicate checks and verified map consistency invariants.
 
@@ -88,17 +88,17 @@
 
 ### Tests for User Story 3
 
-- [ ] T022 [P] [US3] Add FsCheck.Xunit property for PNML arc place-id resolution parity in test/core.tests/PnmlModelLoaderReverseLookupProperties.cs
-- [ ] T023 [P] [US3] Add FsCheck.Xunit property for `LoadMarkings` place-id resolution parity and failure contracts in test/core.tests/PnmlModelLoaderReverseLookupProperties.cs
-- [ ] T024 [P] [US3] Add FsCheck.Xunit property validating deterministic PNML benchmark fixture parity in test/core.tests/ReverseLookupBenchmarkProperties.cs
+- [X] T022 [P] [US3] Add FsCheck.Xunit property for PNML arc place-id resolution parity in test/core.tests/PnmlModelLoaderReverseLookupProperties.cs
+- [X] T023 [P] [US3] Add FsCheck.Xunit property for `LoadMarkings` place-id resolution parity and failure contracts in test/core.tests/PnmlModelLoaderReverseLookupProperties.cs
+- [X] T024 [P] [US3] Add FsCheck.Xunit property validating deterministic PNML benchmark fixture parity in test/core.tests/ReverseLookupBenchmarkProperties.cs
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Introduce per-net place-id-to-index lookup map in PNML load flow in src/core/PnmlModelLoader.cs
-- [ ] T026 [US3] Replace value-scan place resolution in `LoadMarkings` with lookup-map resolution in src/core/PnmlModelLoader.cs
-- [ ] T027 [US3] Implement `KeyNotFoundException` for missing place IDs with actionable context in src/core/PnmlModelLoader.cs
-- [ ] T028 [US3] Add PNML load benchmark measurements for reverse-lookup path in perf/core.benchmarks/ReverseLookupBenchmarks.cs
-- [ ] T029 [US3] Update PNML resolution contract notes for lookup behavior and failure modes in specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
+- [X] T025 [US3] Introduce per-net place-id-to-index lookup map in PNML load flow in src/core/PnmlModelLoader.cs
+- [X] T026 [US3] Replace value-scan place resolution in `LoadMarkings` with lookup-map resolution in src/core/PnmlModelLoader.cs
+- [X] T027 [US3] Implement `KeyNotFoundException` for missing place IDs with actionable context in src/core/PnmlModelLoader.cs
+- [X] T028 [US3] Add PNML load benchmark measurements for reverse-lookup path in perf/core.benchmarks/ReverseLookupBenchmarks.cs
+- [X] T029 [US3] Update PNML resolution contract notes for lookup behavior and failure modes in specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
 
 **Checkpoint**: User Story 3 is independently functional and testable with O(1) PNML place-id resolution and benchmark coverage.
 
@@ -108,13 +108,13 @@
 
 **Purpose**: Validate full feature outcomes, capture reproducible evidence, and finalize documentation.
 
-- [ ] T030 [P] Add construction benchmark coverage and large-scale parameters for SC-002 in perf/core.benchmarks/ReverseLookupBenchmarks.cs
-- [ ] T031 [P] Record full feature validation commands and expected checks in specs/003-reverse-lookup-maps/quickstart.md
-- [ ] T032 Record benchmark evidence expectations for SC-002/SC-003/SC-006 in specs/003-reverse-lookup-maps/quickstart.md
-- [ ] T033 [P] Update feature summary and completion checklist in specs/003-reverse-lookup-maps/plan.md
-- [ ] T036 Verify FR-009 API signature compatibility for builder fluent and lookup methods against baseline in src/core/builders/CreatePetriNet.cs
-- [ ] T037 Run full regression suite for SC-004 with dotnet test petrinets2.slnx and record pass evidence in specs/003-reverse-lookup-maps/quickstart.md
-- [ ] T038 Confirm clone and serialize remain out of scope and document future reconstruction rule in specs/003-reverse-lookup-maps/spec.md and specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
+- [X] T030 [P] Add construction benchmark coverage and large-scale parameters for SC-002 in perf/core.benchmarks/ReverseLookupBenchmarks.cs
+- [X] T031 [P] Record full feature validation commands and expected checks in specs/003-reverse-lookup-maps/quickstart.md
+- [X] T032 Record benchmark evidence expectations for SC-002/SC-003/SC-006 in specs/003-reverse-lookup-maps/quickstart.md
+- [X] T033 [P] Update feature summary and completion checklist in specs/003-reverse-lookup-maps/plan.md
+- [X] T036 Verify FR-009 API signature compatibility for builder fluent and lookup methods against baseline in src/core/builders/CreatePetriNet.cs
+- [X] T037 Run full regression suite for SC-004 with dotnet test petrinets2.slnx and record pass evidence in specs/003-reverse-lookup-maps/quickstart.md
+- [X] T038 Confirm clone and serialize remain out of scope and document future reconstruction rule in specs/003-reverse-lookup-maps/spec.md and specs/003-reverse-lookup-maps/contracts/reverse-lookup-contract.md
 
 ---
 
