@@ -84,3 +84,26 @@ Additional builder validation:
 - Existing sample corpus passes against new loader path.
 - Old loader marked deprecated and left functionally untouched.
 - Benchmarks demonstrate required performance and allocation deltas.
+
+## 8. Latest Validation Snapshot (2026-04-13)
+
+- `dotnet test test/core.tests/core.tests.csproj`: pass (131 passed, 0 failed).
+- `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*PnmlStreamingLoadBenchmarks*" --job short`: pass with benchmark output.
+- `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*PetriNetBuilderBenchmarks*" --job short`: pass with benchmark output.
+
+Key benchmark observations:
+
+- PNML load throughput improved significantly for large scenarios.
+	- `Legacy_PnmlModelLoader_Load` (1024x1024): `164,032.4 us`
+	- `Streaming_LoadGraph` (1024x1024): `1,894.5 us`
+	- `Streaming_LoadMatrix` (1024x1024): `2,125.2 us`
+- Builder materialization profile:
+	- `BuildGraph` (1024x1024): `301.07 us`, `1,390.95 KB`
+	- `BuildMatrix` (1024x1024): `614.51 us`, `1,008.88 KB`
+
+Open performance blocker:
+
+- SC-002 target (>=30% temporary allocation reduction per load) is not yet met for streaming loader in the current benchmark snapshot.
+	- Legacy allocation (1024x1024): `2,915.32 KB`
+	- Streaming graph allocation (1024x1024): `3,914.59 KB`
+	- Streaming matrix allocation (1024x1024): `3,532.52 KB`

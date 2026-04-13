@@ -44,6 +44,13 @@ Defines external behavior and failure contracts for the new streamed PNML loader
 - Output:
   - Ordered collection of nets in selected target representation.
 
+### Finalized API names
+
+- `IReadOnlyList<GraphPetriNet> LoadGraph(string path)`
+- `IReadOnlyList<MatrixPetriNet> LoadMatrix(string path)`
+- `IReadOnlyList<TNet> Load<TNet>(string path) where TNet : PetriNetBase`
+- `IReadOnlyList<PetriNetBase> Load(string path, PnmlTargetModel target)`
+
 ## Conformance Boundary
 
 - Supported in this feature:

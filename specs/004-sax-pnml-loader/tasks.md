@@ -17,10 +17,10 @@
 
 **Purpose**: Prepare benchmark and test scaffolding for streamed loader + new builder work.
 
-- [ ] T001 Create builder and loader property data generators in test/core.tests/PnmlStreamingPropertyData.cs
-- [ ] T002 [P] Create benchmark scenario generator for streamed PNML inputs in perf/core.benchmarks/PnmlLoadBenchmarkScenarios.cs
-- [ ] T003 [P] Create benchmark scenario generator for builder construction pressure in perf/core.benchmarks/PetriNetBuilderBenchmarkScenarios.cs
-- [ ] T004 [P] Register new FsCheck arbitraries for PNML/builder property inputs in test/core.tests/globals.cs
+- [x] T001 Create builder and loader property data generators in test/core.tests/PnmlStreamingPropertyData.cs
+- [x] T002 [P] Create benchmark scenario generator for streamed PNML inputs in perf/core.benchmarks/PnmlLoadBenchmarkScenarios.cs
+- [x] T003 [P] Create benchmark scenario generator for builder construction pressure in perf/core.benchmarks/PetriNetBuilderBenchmarkScenarios.cs
+- [x] T004 [P] Register new FsCheck arbitraries for PNML/builder property inputs in test/core.tests/globals.cs
 
 ---
 
@@ -30,11 +30,11 @@
 
 **CRITICAL**: Do not begin production implementation before this phase is complete.
 
-- [ ] T005 Add failing FsCheck.Xunit contract-focused properties for `PetriNetBuilder` fluent API invariants in test/core.tests/PetriNetBuilderProperties.cs
-- [ ] T006 [P] Add failing FsCheck.Xunit contract-focused properties for streamed loader ordering and multi-net behavior in test/core.tests/PnmlStreamingLoaderProperties.cs
-- [ ] T007 [P] Add failing FsCheck.Xunit property suites for core PT-net conformance/failure-mode invariants in test/core.tests/PnmlStreamingLoaderConformanceTests.cs
-- [ ] T008 Add benchmark harness shell for builder and streamed loader with `MemoryDiagnoser` in perf/core.benchmarks/PnmlStreamingLoadBenchmarks.cs
-- [ ] T009 [P] Register streamed and builder benchmarks in perf/core.benchmarks/Program.cs
+- [x] T005 Add failing FsCheck.Xunit contract-focused properties for `PetriNetBuilder` fluent API invariants in test/core.tests/PetriNetBuilderProperties.cs
+- [x] T006 [P] Add failing FsCheck.Xunit contract-focused properties for streamed loader ordering and multi-net behavior in test/core.tests/PnmlStreamingLoaderProperties.cs
+- [x] T007 [P] Add failing FsCheck.Xunit property suites for core PT-net conformance/failure-mode invariants in test/core.tests/PnmlStreamingLoaderConformanceTests.cs
+- [x] T008 Add benchmark harness shell for builder and streamed loader with `MemoryDiagnoser` in perf/core.benchmarks/PnmlStreamingLoadBenchmarks.cs
+- [x] T009 [P] Register streamed and builder benchmarks in perf/core.benchmarks/Program.cs
 
 **Checkpoint**: Foundation complete; user story implementation can begin.
 
@@ -48,23 +48,23 @@
 
 ### Tests for User Story 1 (write first)
 
-- [ ] T010 [P] [US1] Add failing property for sparse-to-dense parity (`BuildGraph` vs `BuildMatrix`) in test/core.tests/PetriNetBuilderProperties.cs
-- [ ] T011 [P] [US1] Add failing property for builder endpoint/index validity invariants in test/core.tests/PetriNetBuilderProperties.cs
-- [ ] T012 [P] [US1] Add failing property for streamed loader graph/matrix behavioral parity in test/core.tests/PnmlStreamingLoaderProperties.cs
-- [ ] T013 [P] [US1] Add failing property for streamed loader preserving source net order in multi-net documents in test/core.tests/PnmlStreamingLoaderProperties.cs
-- [ ] T014 [P] [US1] Add failing FsCheck.Xunit conformance properties that reuse embedded sample corpus across input classes in test/core.tests/PnmlStreamingLoaderConformanceTests.cs
-- [ ] T015 [P] [US1] Add failing FsCheck.Xunit failure-contract properties for duplicate IDs and missing arc endpoints in test/core.tests/PnmlStreamingLoaderConformanceTests.cs
+- [x] T010 [P] [US1] Add failing property for sparse-to-dense parity (`BuildGraph` vs `BuildMatrix`) in test/core.tests/PetriNetBuilderProperties.cs
+- [x] T011 [P] [US1] Add failing property for builder endpoint/index validity invariants in test/core.tests/PetriNetBuilderProperties.cs
+- [x] T012 [P] [US1] Add failing property for streamed loader graph/matrix behavioral parity in test/core.tests/PnmlStreamingLoaderProperties.cs
+- [x] T013 [P] [US1] Add failing property for streamed loader preserving source net order in multi-net documents in test/core.tests/PnmlStreamingLoaderProperties.cs
+- [x] T014 [P] [US1] Add failing FsCheck.Xunit conformance properties that reuse embedded sample corpus across input classes in test/core.tests/PnmlStreamingLoaderConformanceTests.cs
+- [x] T015 [P] [US1] Add failing FsCheck.Xunit failure-contract properties for duplicate IDs and missing arc endpoints in test/core.tests/PnmlStreamingLoaderConformanceTests.cs
 
 ### Implementation for User Story 1
 
-- [ ] T016 [US1] Implement new fluent builder class `PetriNetBuilder` with `With*` and `Adding*` idioms in src/core/builders/PetriNetBuilder.cs
-- [ ] T017 [US1] Implement sparse intermediate adjacency state and compact projection to dense graph model in src/core/builders/PetriNetBuilder.cs
-- [ ] T018 [US1] Implement compact projection to dense matrix model with minimal temporary allocations in src/core/builders/PetriNetBuilder.cs
-- [ ] T019 [US1] Implement single-pass `XmlReader` loader using `PetriNetBuilder` in src/core/PnmlStreamingModelLoader.cs
-- [ ] T020 [US1] Add Graph/Matrix target selection API and route finalization through `PetriNetBuilder` terminal build methods in src/core/PnmlStreamingModelLoader.cs
-- [ ] T021 [US1] Add deterministic exception messaging and guard clauses for malformed core PT-net inputs in src/core/PnmlStreamingModelLoader.cs
-- [ ] T022 [US1] Mark existing loader as deprecated without behavior change in src/core/PnmlModelLoader.cs
-- [ ] T023 [US1] Document migration guidance from old loader to streamed loader and any builder API deltas in docs/the-arc-language.md
+- [x] T016 [US1] Implement new fluent builder class `PetriNetBuilder` with `With*` and `Adding*` idioms in src/core/builders/PetriNetBuilder.cs
+- [x] T017 [US1] Implement sparse intermediate adjacency state and compact projection to dense graph model in src/core/builders/PetriNetBuilder.cs
+- [x] T018 [US1] Implement compact projection to dense matrix model with minimal temporary allocations in src/core/builders/PetriNetBuilder.cs
+- [x] T019 [US1] Implement single-pass `XmlReader` loader using `PetriNetBuilder` in src/core/PnmlStreamingModelLoader.cs
+- [x] T020 [US1] Add Graph/Matrix target selection API and route finalization through `PetriNetBuilder` terminal build methods in src/core/PnmlStreamingModelLoader.cs
+- [x] T021 [US1] Add deterministic exception messaging and guard clauses for malformed core PT-net inputs in src/core/PnmlStreamingModelLoader.cs
+- [x] T022 [US1] Mark existing loader as deprecated without behavior change in src/core/PnmlModelLoader.cs
+- [x] T023 [US1] Document migration guidance from old loader to streamed loader and any builder API deltas in docs/the-arc-language.md
 
 **Checkpoint**: US1 complete and independently testable.
 
@@ -74,13 +74,13 @@
 
 **Purpose**: Validate success criteria, complete benchmark evidence, and align documentation/contracts.
 
-- [ ] T024 [P] Add builder-focused benchmark cases and allocation metrics in perf/core.benchmarks/PetriNetBuilderBenchmarks.cs
-- [ ] T025 [P] Add old-vs-new loader benchmark cases in perf/core.benchmarks/PnmlStreamingLoadBenchmarks.cs
-- [ ] T026 [P] Capture benchmark evidence required by SC-001/SC-002 in specs/004-sax-pnml-loader/quickstart.md
-- [ ] T027 [P] Record conformance and regression command outcomes in specs/004-sax-pnml-loader/quickstart.md
-- [ ] T028 Update contract details for any finalized API names/signatures in specs/004-sax-pnml-loader/contracts/pnml-streaming-loader-contract.md
-- [ ] T029 Verify plan completion checklist/status notes in specs/004-sax-pnml-loader/plan.md
-- [ ] T030 Run and gate all existing affected property suites for loading/firing invariants and fail completion on any regression in test/core.tests
+- [x] T024 [P] Add builder-focused benchmark cases and allocation metrics in perf/core.benchmarks/PetriNetBuilderBenchmarks.cs
+- [x] T025 [P] Add old-vs-new loader benchmark cases in perf/core.benchmarks/PnmlStreamingLoadBenchmarks.cs
+- [x] T026 [P] Capture benchmark evidence required by SC-001/SC-002 in specs/004-sax-pnml-loader/quickstart.md
+- [x] T027 [P] Record conformance and regression command outcomes in specs/004-sax-pnml-loader/quickstart.md
+- [x] T028 Update contract details for any finalized API names/signatures in specs/004-sax-pnml-loader/contracts/pnml-streaming-loader-contract.md
+- [x] T029 Verify plan completion checklist/status notes in specs/004-sax-pnml-loader/plan.md
+- [x] T030 Run and gate all existing affected property suites for loading/firing invariants and fail completion on any regression in test/core.tests
 
 ---
 
@@ -131,3 +131,4 @@
 - This feature has one prioritized user story; conformance and regression obligations are captured as acceptance and validation tasks, not separate stories.
 - Keep old `PnmlModelLoader` behavior stable while introducing deprecation warnings.
 - Preserve constitution constraints: property-based TDD, correctness before performance, and idiomatic C# contracts.
+- Benchmark evidence captures a current SC-002 allocation regression for streaming load; follow-up optimization is still required to satisfy the >=30% allocation reduction target.

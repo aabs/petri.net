@@ -2,6 +2,8 @@ namespace core.tests;
 
 using core.benchmarks;
 
+#pragma warning disable CS0618
+
 public class PnmlModelLoaderReverseLookupProperties
 {
     [Property]
@@ -48,3 +50,5 @@ public class PnmlModelLoaderReverseLookupProperties
             && keyNotFoundException.Message.Contains("missing-place-id", StringComparison.Ordinal);
     }
 }
+
+#pragma warning restore CS0618

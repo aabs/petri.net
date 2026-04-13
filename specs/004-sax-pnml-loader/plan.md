@@ -124,3 +124,19 @@ Output artifacts: `data-model.md`, `contracts/pnml-streaming-loader-contract.md`
 ## Complexity Tracking
 
 No constitution violations were required for this plan.
+
+## Implementation Status (2026-04-13)
+
+- Added `PnmlStreamingModelLoader` using single-pass `XmlReader` parsing with multi-net source-order handling.
+- Added `PetriNetBuilder` with fluent `With*`/`Adding*` idioms and sparse-to-dense materialization paths for graph and matrix outputs.
+- Marked `PnmlModelLoader` as deprecated without changing existing behavior.
+- Added property-based suites for builder invariants, streaming order/parity, and deterministic conformance failures.
+- Added benchmark coverage for streamed loader and builder materialization paths; benchmark evidence captured in `quickstart.md`.
+
+## Completion Checklist Snapshot
+
+- [x] New streaming loader implemented
+- [x] New builder implemented
+- [x] Sample corpus conformance and regression tests green
+- [x] Benchmark harnesses added and registered
+- [ ] Allocation reduction target SC-002 met (currently open)

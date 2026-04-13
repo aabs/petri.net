@@ -197,3 +197,25 @@ Figure 4. Multi-channel intake converges at `t_triage`, then branches to two out
 - Manufacturing cell: multiple feed places into one batch transition with weighted output
 
 If you want, this guide can be extended with a section mapping each arc-language construct to the underlying builder API calls.
+
+## PNML Loader Migration
+
+PNML loading now has a new preferred streaming API:
+
+- Deprecated: `PnmlModelLoader`
+- Preferred: `PnmlStreamingModelLoader`
+
+Use the new loader for both graph and matrix model construction:
+
+```csharp
+var loader = new PnmlStreamingModelLoader();
+IReadOnlyList<GraphPetriNet> graphNets = loader.LoadGraph(path);
+IReadOnlyList<MatrixPetriNet> matrixNets = loader.LoadMatrix(path);
+```
+
+Builder migration notes:
+
+- Existing compatibility builder: `CreatePetriNet`
+- New fluent builder: `PetriNetBuilder`
+
+`PetriNetBuilder` is intended for incremental, low-allocation construction and supports fluent `With*` / `Adding*` methods plus terminal `BuildGraph()` and `BuildMatrix()` operations.
