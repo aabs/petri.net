@@ -167,8 +167,8 @@ The fastest high-confidence gains are:
 | ID | Recommendation | Impact | Effort | Risk | Confidence | Suggested order |
 |---|---|---|---|---|---|---|
 | R1 | ~~Max-scan transition selection~~ | High | Low | Low | High | 1 |
-| R2 | Remove hot-path materialization | High | Medium | Medium | High | 2 |
-| R3 | Reverse lookup maps | High | Low | Low | High | 3 |
+| R2 | ~~Remove hot-path materialization~~ | High | Medium | Medium | High | 2 |
+| R3 | ~~Reverse lookup maps~~ | High | Low | Low | High | 3 |
 | R4 | PNML indexed parse | Medium/High | Medium/High | Medium | Medium | 4 |
 | R5 | Sparse matrix fire kernel | Very high | High | Medium/High | Medium | 5 |
 | R6 | Pooled scratch buffers | Medium/High | Medium | Medium | Medium | 6 |
@@ -222,7 +222,7 @@ This section is designed to be directly converted into focused Spec-Kit cycles. 
 
 ---
 
-### R1: Max-scan transition selection
+### R1: Max-scan transition selection: Done
 
 **Problem statement**
 Priority transition selection currently uses enumerable ordering semantics in hot execution paths.
@@ -264,7 +264,7 @@ Priority transition selection currently uses enumerable ordering semantics in ho
 
 ---
 
-### R2: Remove hot-path materialization and iterator churn
+### R2: Remove hot-path materialization and iterator churn: Done
 
 **Problem statement**
 Current hot methods allocate arrays/lists and iterators that are avoidable.
@@ -301,7 +301,7 @@ Current hot methods allocate arrays/lists and iterators that are avoidable.
 
 ---
 
-### R3: Reverse lookup maps for names to indices
+### R3: Reverse lookup maps for names to indices: Done
 
 **Problem statement**
 Name-to-index resolution scans dictionaries by value, creating O(n) lookup overhead.
