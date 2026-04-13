@@ -16,20 +16,31 @@ public static class PnmlModelLoader
 
     public static IDictionary<string, Marking> LoadMarkings(string path, IEnumerable<GraphPetriNet> nets)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(nets);
+
         XNamespace ns = "http://www.example.org/pnml";
         XDocument doc = XDocument.Load(path);
+
+        var netsById = nets.ToDictionary(net => net.Id, StringComparer.Ordinal);
+        var placeIndexByNetId = nets.ToDictionary(
+            net => net.Id,
+            net => net.Places.ToDictionary(place => place.Value, place => place.Key, StringComparer.Ordinal),
+            StringComparer.Ordinal);
+
         var netmarkings = from n in doc.Descendants(ns + "net")
                           let netid = n.Attribute("id").Value
-                          let net = nets.Where(x => x.Id == netid).First()
+                          let net = netsById[netid]
+                          let placeLookup = placeIndexByNetId[netid]
                           let placeMarkings = from p in n.Descendants(ns + "place")
-                                              let Id = p.Attribute("id").Value
-                                              let place = net.Places.Where(x => x.Value == Id).Single()
+                                              let placeId = p.Attribute("id").Value
+                                              let place = ResolvePlaceIndex(placeLookup, netid, placeId)
                                               let Marking =
                                                   int.Parse(
                                                       p.Element(ns + "initialMarking").Element(ns + "text").Value ??
                                                       "0")
-                                              orderby place.Key
-                                              select Tuple.Create(place.Key, Marking)
+                                              orderby place
+                                              select Tuple.Create(place, Marking)
                           let maxId = placeMarkings.Max(x => x.Item1)
                           select new
                                      {
@@ -42,51 +53,103 @@ public static class PnmlModelLoader
 
     public static IEnumerable<GraphPetriNet> Load(string path)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         XNamespace ns = "http://www.example.org/pnml";
         XDocument doc = XDocument.Load(path);
-        IEnumerable<GraphPetriNet> x = from n in doc.Descendants(ns + "net")
-                                       let netid = n.Attribute("id").Value
-                                       let places = from p in n.Descendants(ns + "place")
-                                                    let Guid = GetId()
-                                                    let Id = p.Attribute("id").Value
-                                                    let Name = p.Element(ns + "name").Element(ns + "text").Value
-                                                    let Marking =
-                                                        int.Parse(
-                                                            p.Element(ns + "initialMarking").Element(ns + "text").
-                                                                Value ?? "0")
-                                                    select new { Guid, Id, Name, Marking }
-                                       let transitions = from t in n.Descendants(ns + "transition")
-                                                         let Guid = GetId()
-                                                         let Id = t.Attribute("id").Value
-                                                         select new { Guid, Id }
-                                       let inarcs = from t in transitions
-                                                    let ia = from a in n.Descendants(ns + "arc")
-                                                             let sourceId = (from p in places
-                                                                             where
-                                                                                 p.Id == a.Attribute("source").Value
-                                                                             select p.Guid).SingleOrDefault()
-                                                             where a.Attribute("target").Value == t.Id
-                                                             select new InArc(sourceId)
-                                                    select new { t.Guid, inArcs = ia.ToList() }
-                                       let outarcs = from t in transitions
-                                                     let oa = from a in n.Descendants(ns + "arc")
-                                                              let targetId = (from p in transitions
-                                                                              where
-                                                                                  p.Id ==
-                                                                                  a.Attribute("target").Value
-                                                                              select p.Guid).SingleOrDefault()
-                                                              where a.Attribute("target").Value == t.Id
-                                                              select new OutArc(targetId)
-                                                     select new { t.Guid, outArcs = oa.ToList() }
-                                       where n.Attribute("type").Value == "http://www.example.org/pnml/PTNet"
-                                       select new GraphPetriNet(
-                                           netid,
-                                           places.ToDictionary(y => y.Guid, y => y.Id),
-                                           transitions.ToDictionary(y => y.Guid, y => y.Id),
-                                           inarcs.ToDictionary(y => y.Guid, y => y.inArcs),
-                                           outarcs.ToDictionary(y => y.Guid, y => y.outArcs)
-                                           );
-        return x;
+        var result = new List<GraphPetriNet>();
+
+        foreach (var netElement in doc.Descendants(ns + "net"))
+        {
+            var type = netElement.Attribute("type")?.Value;
+            if (!string.Equals(type, "http://www.example.org/pnml/PTNet", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var netId = netElement.Attribute("id")?.Value ?? throw new ApplicationException("PNML net is missing id attribute.");
+            var places = netElement.Descendants(ns + "place")
+                .Select((place, index) => new
+                {
+                    Guid = index,
+                    Id = place.Attribute("id")?.Value ?? throw new ApplicationException($"PNML place in net '{netId}' is missing id attribute.")
+                })
+                .ToList();
+
+            var transitions = netElement.Descendants(ns + "transition")
+                .Select((transition, index) => new
+                {
+                    Guid = index,
+                    Id = transition.Attribute("id")?.Value ?? throw new ApplicationException($"PNML transition in net '{netId}' is missing id attribute.")
+                })
+                .ToList();
+
+            var placeIdLookup = places.ToDictionary(place => place.Id, place => place.Guid, StringComparer.Ordinal);
+            var transitionIdLookup = transitions.ToDictionary(transition => transition.Id, transition => transition.Guid, StringComparer.Ordinal);
+
+            var inArcs = transitions.ToDictionary(
+                transition => transition.Guid,
+                transition => ResolveInArcs(netElement, transition.Id, placeIdLookup, netId, ns));
+
+            var outArcs = transitions.ToDictionary(
+                transition => transition.Guid,
+                transition => ResolveOutArcs(netElement, transition.Id, placeIdLookup, netId, ns));
+
+            result.Add(new GraphPetriNet(
+                netId,
+                places.ToDictionary(place => place.Guid, place => place.Id),
+                transitions.ToDictionary(transition => transition.Guid, transition => transition.Id),
+                inArcs,
+                outArcs));
+        }
+
+        return result;
+    }
+
+    static int ResolvePlaceIndex(Dictionary<string, int> placeLookup, string netId, string placeId)
+    {
+        if (placeLookup.TryGetValue(placeId, out var index))
+        {
+            return index;
+        }
+
+        throw new KeyNotFoundException($"PNML net '{netId}' references place id '{placeId}', but no matching place was loaded.");
+    }
+
+    static List<InArc> ResolveInArcs(XElement netElement, string transitionId, Dictionary<string, int> placeIdLookup, string netId, XNamespace ns)
+    {
+        var arcs = new List<InArc>();
+        foreach (var arc in netElement.Descendants(ns + "arc").Where(element => string.Equals(element.Attribute("target")?.Value, transitionId, StringComparison.Ordinal)))
+        {
+            var sourceId = arc.Attribute("source")?.Value ?? string.Empty;
+            if (!placeIdLookup.TryGetValue(sourceId, out var sourceIndex))
+            {
+                var arcId = arc.Attribute("id")?.Value ?? "<unknown>";
+                throw new KeyNotFoundException($"PNML net '{netId}' arc '{arcId}' references source place id '{sourceId}', but no matching place was loaded.");
+            }
+
+            arcs.Add(new InArc(sourceIndex));
+        }
+
+        return arcs;
+    }
+
+    static List<OutArc> ResolveOutArcs(XElement netElement, string transitionId, Dictionary<string, int> placeIdLookup, string netId, XNamespace ns)
+    {
+        var arcs = new List<OutArc>();
+        foreach (var arc in netElement.Descendants(ns + "arc").Where(element => string.Equals(element.Attribute("source")?.Value, transitionId, StringComparison.Ordinal)))
+        {
+            var targetId = arc.Attribute("target")?.Value ?? string.Empty;
+            if (!placeIdLookup.TryGetValue(targetId, out var targetIndex))
+            {
+                var arcId = arc.Attribute("id")?.Value ?? "<unknown>";
+                throw new KeyNotFoundException($"PNML net '{netId}' arc '{arcId}' references target place id '{targetId}', but no matching place was loaded.");
+            }
+
+            arcs.Add(new OutArc(targetIndex, 1));
+        }
+
+        return arcs;
     }
 }
 

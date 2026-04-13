@@ -24,7 +24,8 @@
     Outputs="$(MSBuildProjectDirectory)/Parser.cs;$(MSBuildProjectDirectory)/Scanner.cs">
     <Exec
       Command="coco pnarclang.atg"
-      WorkingDirectory="$(MSBuildProjectDirectory)" />
+      WorkingDirectory="$(MSBuildProjectDirectory)"
+      EnvironmentVariables="DOTNET_ROLL_FORWARD=Major" />
   </Target>
 
 </Project>

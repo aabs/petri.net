@@ -4,6 +4,10 @@ namespace petrinets2.core;
 
 public class CreatePetriNet
 {
+    readonly object _sync = new();
+    Dictionary<string, int> _placesByName;
+    Dictionary<string, int> _transitionsByName;
+
     /// <summary>
     /// Adds the specs in textual shorthand
     /// </summary>
@@ -90,9 +94,11 @@ public class CreatePetriNet
         Contract.Requires(!string.IsNullOrWhiteSpace(name));
         Name = name;
         Places = new Dictionary<int, string>();
+        _placesByName = new Dictionary<string, int>(StringComparer.Ordinal);
         PlaceMarkings = new Dictionary<string, int>();
         PlaceCapacities = new Dictionary<string, int>();
         Transitions = new Dictionary<int, string>();
+        _transitionsByName = new Dictionary<string, int>(StringComparer.Ordinal);
         InArcs = new Dictionary<int, List<InArc>>();
         OutArcs = new Dictionary<int, List<OutArc>>();
         TransitionFunctions = new Dictionary<int, List<Action<GraphPetriNet>>>();
@@ -106,58 +112,63 @@ public class CreatePetriNet
 
     public CreatePetriNet WithPlaces(params string[] placeNames)
     {
-        Contract.Requires(placeNames.Count() != 0);
-        Contract.Requires(placeNames.All(s1 => !string.IsNullOrWhiteSpace(s1)));
-        Contract.Requires(placeNames.All(s1 => s1.All(Char.IsLetterOrDigit)));
-
-        if (Places == null)
+        ArgumentNullException.ThrowIfNull(placeNames);
+        if (placeNames.Length == 0)
         {
-            Places = new Dictionary<int, string>();
+            return this;
         }
-        var tmp = placeNames.Select((s,
-                                    i) => Tuple.Create(i,
-                                                       s)).ToDictionary(tuple => tuple.Item1,
-                                                                        tuple1 => tuple1.Item2);
 
-        int count = (Places.Count > 0 ? Places.Keys.Max() : -1) + 1;
-
-        foreach (var item in tmp)
+        lock (_sync)
         {
-            if (!Places.ContainsValue(item.Value))
+            EnsureReverseMapsSynchronized();
+            var nextIndex = (Places.Count > 0 ? Places.Keys.Max() : -1) + 1;
+
+            foreach (var placeName in placeNames)
             {
-                Places[count] = item.Value;
-                count++;
+                ArgumentException.ThrowIfNullOrWhiteSpace(placeName);
+
+                if (_placesByName.ContainsKey(placeName))
+                {
+                    continue;
+                }
+
+                Places[nextIndex] = placeName;
+                _placesByName[placeName] = nextIndex;
+                nextIndex++;
             }
         }
+
         return this;
     }
     public CreatePetriNet AndPlaces(params string[] placeNames) { return WithPlaces(placeNames); }
     public CreatePetriNet WithTransitions(params string[] transitionNames)
     {
-        Contract.Requires(transitionNames.Count() != 0);
-        Contract.Requires(transitionNames.All(s1 => !string.IsNullOrWhiteSpace(s1)));
-        Contract.Requires(transitionNames.All(s1 => s1.All(Char.IsLetterOrDigit)));
-
-        if (Transitions == null)
+        ArgumentNullException.ThrowIfNull(transitionNames);
+        if (transitionNames.Length == 0)
         {
-            Transitions = new Dictionary<int, string>();
+            return this;
         }
 
-        var tmp = transitionNames.Select((s,
-                                    i) => Tuple.Create(i,
-                                                       s)).ToDictionary(tuple => tuple.Item1,
-                                                                        tuple1 => tuple1.Item2);
-
-        int count = (Transitions.Count > 0 ? Transitions.Keys.Max() : -1) + 1;
-
-        foreach (var item in tmp)
+        lock (_sync)
         {
-            if (!Transitions.ContainsValue(item.Value))
+            EnsureReverseMapsSynchronized();
+            var nextIndex = (Transitions.Count > 0 ? Transitions.Keys.Max() : -1) + 1;
+
+            foreach (var transitionName in transitionNames)
             {
-                Transitions[count] = item.Value;
-                count++;
+                ArgumentException.ThrowIfNullOrWhiteSpace(transitionName);
+
+                if (_transitionsByName.ContainsKey(transitionName))
+                {
+                    continue;
+                }
+
+                Transitions[nextIndex] = transitionName;
+                _transitionsByName[transitionName] = nextIndex;
+                nextIndex++;
             }
         }
+
         return this;
     }
     public CreatePetriNet AndTransitions(params string[] transitionNames) { return WithTransitions(transitionNames); }
@@ -221,64 +232,138 @@ public class CreatePetriNet
 
     public int TransitionIndex(string name)
     {
-        return Transitions.Where(pair => pair.Value == name).Select(valuePair => valuePair.Key).First();
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        lock (_sync)
+        {
+            EnsureReverseMapsSynchronized();
+            if (_transitionsByName.TryGetValue(name, out var index))
+            {
+                return index;
+            }
+        }
+
+        throw new KeyNotFoundException($"Transition '{name}' is not registered in builder '{Name}'.");
     }
 
     public int PlaceIndex(string name)
     {
-        return Places.Where(pair => pair.Value == name).Select(valuePair => valuePair.Key).First();
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        lock (_sync)
+        {
+            EnsureReverseMapsSynchronized();
+            if (_placesByName.TryGetValue(name, out var index))
+            {
+                return index;
+            }
+        }
+
+        throw new KeyNotFoundException($"Place '{name}' is not registered in builder '{Name}'.");
     }
     public void AddInArc(string placeName,
                          string transitionName,
                          bool isInhibitor,
                          int weight)
     {
-        if (InArcs == null)
+        lock (_sync)
         {
-            InArcs = new Dictionary<int, List<InArc>>();
-        }
-        int placeIndex = PlaceIndex(placeName);
-        int transitionIndex = TransitionIndex(transitionName);
+            EnsureReverseMapsSynchronized();
+            if (InArcs == null)
+            {
+                InArcs = new Dictionary<int, List<InArc>>();
+            }
 
-        if (!InArcs.ContainsKey(transitionIndex))
-        {
-            InArcs[transitionIndex] = new List<InArc>();
+            var placeIndex = PlaceIndex(placeName);
+            var transitionIndex = TransitionIndex(transitionName);
+
+            if (!InArcs.ContainsKey(transitionIndex))
+            {
+                InArcs[transitionIndex] = new List<InArc>();
+            }
+            InArcs[transitionIndex].Add(new InArc(placeIndex, weight, isInhibitor));
         }
-        InArcs[transitionIndex].Add(new InArc(placeIndex, weight, isInhibitor));
     }
 
     public void AddOutArc(string transitionName, string placeName,
                          int weight = 1)
     {
-        if (OutArcs == null)
+        lock (_sync)
         {
-            OutArcs = new Dictionary<int, List<OutArc>>();
+            EnsureReverseMapsSynchronized();
+            if (OutArcs == null)
+            {
+                OutArcs = new Dictionary<int, List<OutArc>>();
+            }
+
+            var fromIndex = TransitionIndex(transitionName);
+            var toIndex = PlaceIndex(placeName);
+            if (!OutArcs.ContainsKey(fromIndex))
+            {
+                OutArcs[fromIndex] = new List<OutArc>();
+            }
+            OutArcs[fromIndex].Add(new OutArc(toIndex, weight));
         }
-        int fromIndex = TransitionIndex(transitionName);
-        int toIndex = PlaceIndex(placeName);
-        if (!OutArcs.ContainsKey(fromIndex))
-        {
-            OutArcs[fromIndex] = new List<OutArc>();
-        }
-        OutArcs[fromIndex].Add(new OutArc(toIndex, weight));
     }
 
     public void AddEvent(string transitionName, Action<GraphPetriNet> task)
     {
-        var transition = TransitionIndex(transitionName);
-        if (TransitionFunctions == null)
+        ArgumentNullException.ThrowIfNull(task);
+
+        lock (_sync)
         {
-            TransitionFunctions = new Dictionary<int, List<Action<GraphPetriNet>>>();
+            var transition = TransitionIndex(transitionName);
+            if (TransitionFunctions == null)
+            {
+                TransitionFunctions = new Dictionary<int, List<Action<GraphPetriNet>>>();
+            }
+            if (!TransitionFunctions.ContainsKey(transition))
+            {
+                TransitionFunctions[transition] = new List<Action<GraphPetriNet>>();
+            }
+            TransitionFunctions[transition].Add(task);
         }
-        if (!TransitionFunctions.ContainsKey(transition))
-        {
-            TransitionFunctions[transition] = new List<Action<GraphPetriNet>>();
-        }
-        TransitionFunctions[transition].Add(task);
     }
     public PlaceSpecifier WithPlace(string placeName)
     {
         Contract.Requires(!string.IsNullOrWhiteSpace(placeName));
         return new PlaceSpecifier(this, placeName);
+    }
+
+    void EnsureReverseMapsSynchronized()
+    {
+        if (Places == null)
+        {
+            Places = new Dictionary<int, string>();
+        }
+
+        if (Transitions == null)
+        {
+            Transitions = new Dictionary<int, string>();
+        }
+
+        if (_placesByName == null || _placesByName.Count != Places.Count || Places.Any(pair => !_placesByName.TryGetValue(pair.Value, out var index) || index != pair.Key))
+        {
+            _placesByName = BuildReverseMap(Places);
+        }
+
+        if (_transitionsByName == null || _transitionsByName.Count != Transitions.Count || Transitions.Any(pair => !_transitionsByName.TryGetValue(pair.Value, out var index) || index != pair.Key))
+        {
+            _transitionsByName = BuildReverseMap(Transitions);
+        }
+    }
+
+    static Dictionary<string, int> BuildReverseMap(Dictionary<int, string> forward)
+    {
+        var result = new Dictionary<string, int>(forward.Count, StringComparer.Ordinal);
+        foreach (var pair in forward.OrderBy(pair => pair.Key))
+        {
+            if (!result.ContainsKey(pair.Value))
+            {
+                result[pair.Value] = pair.Key;
+            }
+        }
+
+        return result;
     }
 }
