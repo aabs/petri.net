@@ -169,7 +169,7 @@ The fastest high-confidence gains are:
 | R1 | ~~Max-scan transition selection~~ | High | Low | Low | High | 1 |
 | R2 | ~~Remove hot-path materialization~~ | High | Medium | Medium | High | 2 |
 | R3 | ~~Reverse lookup maps~~ | High | Low | Low | High | 3 |
-| R4 | PNML indexed parse | Medium/High | Medium/High | Medium | Medium | 4 |
+| R4 | ~~PNML indexed parse~~ | Medium/High | Medium/High | Medium | Medium | 4 |
 | R5 | Sparse matrix fire kernel | Very high | High | Medium/High | Medium | 5 |
 | R6 | Pooled scratch buffers | Medium/High | Medium | Medium | Medium | 6 |
 | R7 | Thread-safe id generation | Medium | Low | Low | High | 7 |
@@ -338,7 +338,7 @@ Name-to-index resolution scans dictionaries by value, creating O(n) lookup overh
 
 ---
 
-### R4: PNML indexed parsing
+### R4: PNML indexed parsing :Done(Alternate Solution)
 
 **Problem statement**
 Repeated Descendants/Where/Single traversals increase parse cost and allocation volume.
@@ -379,38 +379,57 @@ Repeated Descendants/Where/Single traversals increase parse cost and allocation 
 ### R5: Sparse matrix fire kernel redesign
 
 **Problem statement**
-Current matrix fire path scans full place x transition combinations, wasting work on sparse nets.
+The fix must make matrix firing operate on known non-zero structure instead of scanning the full place x transition space.
+Concretely, the fire path must:
+- Enumerate only entries that are known to exist (non-zero pre/post incidence or equivalent sparse adjacency metadata).
+- Skip rows/columns that have no connectivity for the active transition set.
+- Stop enumerating paths that are known not to exist in the matrix (zero-valued/non-existent arcs).
+- Apply token deltas only for affected places, rather than probing every place for every candidate transition.
 
-**Functional requirements**
-- Preserve exact firing semantics and numerical behavior.
-- Preserve transition function side effects and order.
+**Why this is beneficial**
+- Sparse nets have far fewer real arcs than total matrix cells; avoiding full-grid scans reduces per-fire work from grid-size dependent traversal toward work proportional to actual connectivity.
+- Eliminating guaranteed-empty probes reduces branch checks and repeated memory reads, improving cache locality and lowering CPU cycles/op.
+- Restricting updates to affected places decreases unnecessary arithmetic and dictionary/array access on untouched state.
+- Lower steady-state instruction count in the hot fire loop improves throughput and reduces tail latency variability under load.
 
-**Non-functional requirements**
-- Achieve at least 2x throughput on sparse benchmark profiles.
-- Keep dense profile regression under 5%.
+**Requirements (Spec-Kit ready)**
+- The matrix implementation SHALL produce the same post-fire marking as the current baseline for identical net definitions, markings, and selected transitions.
+- The matrix implementation SHALL preserve transition function invocation side effects and invocation order exactly as in the baseline implementation.
+- The matrix implementation SHALL preserve enablement and conflict behavior parity with baseline behavior for identical inputs.
+- The change SHALL be internal to execution logic and SHALL NOT alter public API signatures or externally visible model shape.
+
+**Quality and performance requirements**
+- Sparse-profile throughput SHALL improve by at least 2.0x relative to the baseline in the benchmark matrix defined for this feature.
+- Dense-profile throughput regression SHALL be no worse than 5% relative to the baseline.
+- Allocation rate in sparse fire workloads SHOULD be non-increasing relative to baseline; any increase MUST be justified by benchmark evidence.
+- Execution SHALL remain deterministic for identical inputs.
 
 **Out of scope**
-- No changes to public matrix model shape.
-
-**Design constraints**
-- Implementation must remain deterministic and testable.
+- No semantic changes to firing rules, token accounting, or transition side-effect contracts.
+- No SIMD/intrinsics-specific optimization work (covered separately by R8).
+- No pooling or buffer-lifetime redesign work beyond what is strictly required for this kernel change (covered separately by R6).
 
 **Acceptance criteria**
-- Parity with baseline across randomized model/property tests.
-- Throughput targets met on sparse profiles.
+- Property-based parity tests pass for randomized sparse and dense model families, comparing baseline and redesigned kernels.
+- Existing correctness suite passes without behavioral regressions.
+- Benchmarks demonstrate >=2.0x sparse throughput gain and <=5% dense regression.
+- Determinism checks pass across repeated runs with identical inputs.
 
 **Validation plan**
-- Density sweep benchmark matrix.
-- Differential test oracle against baseline implementation.
+- Run density-sweep benchmarks (low/medium/high arc density) across fixed place/transition scales.
+- Use a differential oracle test harness that executes both baseline and redesigned matrix fire paths over the same generated scenarios.
+- Capture throughput and allocation evidence using BenchmarkDotNet and MemoryDiagnoser.
 
 **Rollout and guardrails**
-- Mandatory feature flag with progressive rollout.
+- Ship behind a feature flag that defaults to baseline behavior.
+- Promote to default only after parity and performance thresholds are met in CI and representative workload replay.
+- Provide immediate fallback to baseline kernel via configuration if regression is detected.
 
 **Task breakdown seed**
-1. Add sparse traversal data structure.
-2. Implement active-transition driven delta update.
-3. Build parity and property tests.
-4. Enable gated rollout.
+1. Define baseline parity oracle and sparse/dense benchmark profiles for the matrix fire path.
+2. Implement sparse-fire execution path behind a feature flag, keeping baseline path intact.
+3. Add property-based parity and determinism tests over randomized model families.
+4. Benchmark sparse and dense profiles, compare against thresholds, and document evidence for graduation.
 
 ---
 
