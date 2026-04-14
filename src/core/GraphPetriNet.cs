@@ -356,22 +356,37 @@ public class GraphPetriNet : PetriNetBase
         if (firingPlan.IsEmpty)
             return result;
 
-        foreach (var transitionId in firingPlan.TransitionIds)
+        using var deltaLease = ScratchBufferPooling.AcquireDeltaScratch();
+        try
         {
-            foreach (var place in GetInArcs(transitionId))
+            var deltasByPlace = deltaLease.Buffer;
+            foreach (var transitionId in firingPlan.TransitionIds)
             {
-                if (place.IsInhibitor)
+                foreach (var place in GetInArcs(transitionId))
                 {
-                    continue;
+                    if (place.IsInhibitor)
+                    {
+                        continue;
+                    }
+
+                    AddDelta(deltasByPlace, place.Source, -place.Weight);
                 }
 
-                result[place.Source] = result[place.Source] - place.Weight;
+                foreach (var arc in GetOutArcs(transitionId))
+                {
+                    AddDelta(deltasByPlace, arc.Target, arc.Weight);
+                }
             }
 
-            foreach (var arc in GetOutArcs(transitionId))
+            foreach (var deltaByPlace in deltasByPlace)
             {
-                result[arc.Target] = result[arc.Target] + arc.Weight;
+                result[deltaByPlace.Key] = m[deltaByPlace.Key] + deltaByPlace.Value;
             }
+        }
+        catch
+        {
+            deltaLease.MarkFaulted();
+            throw;
         }
 
         DispatchFiringPlan(firingPlan, TransitionFunctions);
@@ -433,6 +448,17 @@ public class GraphPetriNet : PetriNetBase
         {
             throw new ArgumentOutOfRangeException(nameof(weight), "Weight must be greater than zero.");
         }
+    }
+
+    static void AddDelta(Dictionary<int, int> deltasByPlace, int placeId, int delta)
+    {
+        if (!deltasByPlace.TryGetValue(placeId, out var existingDelta))
+        {
+            deltasByPlace[placeId] = delta;
+            return;
+        }
+
+        deltasByPlace[placeId] = existingDelta + delta;
     }
 }
 

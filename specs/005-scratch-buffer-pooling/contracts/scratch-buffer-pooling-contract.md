@@ -45,4 +45,4 @@ Defines externally observable behavior and internal contract boundaries for pool
 - BenchmarkDotNet evidence proves:
   - >=20% allocation reduction for targeted steady-state planning/fire workloads,
   - throughput regression no worse than 5% versus baseline,
-  - concurrency stress shows zero ownership violations.
+  - concurrency stress records ownership-violation counts, which must be zero for acceptance.

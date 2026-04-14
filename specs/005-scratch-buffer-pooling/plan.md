@@ -118,6 +118,19 @@ Output artifacts: `data-model.md`, `contracts/scratch-buffer-pooling-contract.md
 - FR-009/FR-010 planning implication: specify bounded retry behavior and no-partial-mutation failure semantics.
 - FR-011/FR-012 planning implication: define internal cap configuration and non-public tuning boundaries.
 
+## Implementation Traceability Update (2026-04-14)
+
+- FR-001/FR-002: Implemented pooled planning and firing scratch paths in `src/core/FiringPlanner.cs`, `src/core/GraphPetriNet.cs`, and `src/core/MatrixPetriNet.cs`; parity properties in `test/core.tests/ScratchBufferPoolingParityProperties.cs`.
+- FR-003/FR-004: Verified behavioral parity and determinism via `test/core.tests/ScratchBufferPoolingParityProperties.cs` and `test/core.tests/ScratchBufferDeterminismProperties.cs`.
+- FR-005/FR-006: Implemented thread-local ownership, lease lifecycle, and exactly-once release guards in `src/core/ScratchBufferPooling.cs`; ownership properties in `test/core.tests/ScratchBufferOwnershipProperties.cs`.
+- FR-009/FR-010: Implemented 5-retry exponential backoff and acquisition-exhaustion atomicity in `src/core/ScratchBufferPooling.cs` with validation in `test/core.tests/ScratchBufferFailureModeProperties.cs`.
+- FR-011/FR-012: Implemented configurable cap defaults and bounds in `src/core/ScratchBufferPooling.cs`; cap-bound validation in `test/core.tests/ScratchBufferFailureModeProperties.cs`.
+
+## API Compatibility Verification (2026-04-14)
+
+- Verified no public API signature changes were introduced in `src/core/GraphPetriNet.cs` and `src/core/MatrixPetriNet.cs`.
+- Scratch-buffer pooling additions are internal (`src/core/ScratchBufferPooling.cs`) and exposed to tests/benchmarks via `InternalsVisibleTo` only.
+
 ## Complexity Tracking
 
 No constitution violations were required for this plan.

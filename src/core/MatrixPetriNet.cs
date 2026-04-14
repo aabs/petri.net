@@ -325,31 +325,40 @@ public class MatrixPetriNet : PetriNetBase
             return result;
         }
 
-        var deltasByPlace = new Dictionary<int, int>();
-        foreach (var transitionId in firingPlan.TransitionIds)
+        using var deltaLease = ScratchBufferPooling.AcquireDeltaScratch();
+        try
         {
-            if (outputPlacesByTransition.TryGetValue(transitionId, out var outputPlaces))
+            var deltasByPlace = deltaLease.Buffer;
+            foreach (var transitionId in firingPlan.TransitionIds)
             {
-                foreach (var placeId in outputPlaces)
+                if (outputPlacesByTransition.TryGetValue(transitionId, out var outputPlaces))
                 {
-                    AddDelta(deltasByPlace, placeId, (int)OutMatrix[placeId, transitionId]);
+                    foreach (var placeId in outputPlaces)
+                    {
+                        AddDelta(deltasByPlace, placeId, (int)OutMatrix[placeId, transitionId]);
+                    }
+                }
+
+                if (!nonInhibitorPlacesByTransition.TryGetValue(transitionId, out var inputPlaces))
+                {
+                    continue;
+                }
+
+                foreach (var placeId in inputPlaces)
+                {
+                    AddDelta(deltasByPlace, placeId, -(int)InMatrix[placeId, transitionId]);
                 }
             }
 
-            if (!nonInhibitorPlacesByTransition.TryGetValue(transitionId, out var inputPlaces))
+            foreach (var deltaByPlace in deltasByPlace)
             {
-                continue;
-            }
-
-            foreach (var placeId in inputPlaces)
-            {
-                AddDelta(deltasByPlace, placeId, -(int)InMatrix[placeId, transitionId]);
+                result[deltaByPlace.Key] = m[deltaByPlace.Key] + deltaByPlace.Value;
             }
         }
-
-        foreach (var deltaByPlace in deltasByPlace)
+        catch
         {
-            result[deltaByPlace.Key] = m[deltaByPlace.Key] + deltaByPlace.Value;
+            deltaLease.MarkFaulted();
+            throw;
         }
 
         DispatchFiringPlan(firingPlan, TransitionFunctions);

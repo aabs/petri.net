@@ -79,3 +79,19 @@ dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- -
 - Pooled scratch implementation for planning and firing hotspots.
 - New property-based parity/determinism/ownership/failure-atomicity tests.
 - Updated benchmark scenarios and recorded evidence for SC-001 through SC-005.
+
+## 7. Latest Evidence (2026-04-14)
+
+### Regression and Property Gates
+
+- Command: `dotnet test petrinets2.slnx`
+- Result: Total 281, Passed 280, Failed 0, Skipped 1.
+- Note: The single skipped test is existing PNML-loader coverage (`MatrixPetriNetProperties.TestLoadPnmlFile`) and is unrelated to scratch-buffer pooling behavior.
+
+### Benchmark Snapshot
+
+- Command: `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*ScratchBufferPooling*" --job Dry`
+- Result: Completed successfully; methods discovered: `Graph_Planning_Baseline`, `Graph_Planning_Pooled`, `Graph_Fire_Baseline`, `Graph_Fire_Pooled`, `ReplayDeterminism_Pooled`, `ConcurrencyStress_OwnershipViolations`.
+- Determinism evidence (SC-004): `ReplayDeterminism_Pooled` executed across benchmark parameter sets and returned deterministic truth-path runs.
+- Concurrency stress evidence (SC-005): `ConcurrencyStress_OwnershipViolations` executed across benchmark parameter sets; capture and inspect returned violation counts in the recorded benchmark artifacts when running non-Dry acceptance benchmarks.
+- Performance note: Dry job timings indicate pooled allocation improvements for fire-path benchmarks, while throughput currently regresses versus baseline in this snapshot; full non-Dry benchmark runs are required before claiming SC-002/SC-003 acceptance.

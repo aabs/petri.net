@@ -11,9 +11,9 @@
 
 **Purpose**: Establish deterministic workload generators, test fixtures, and benchmark scaffolding for pooling scenarios.
 
-- [ ] T001 Create pooling property scenario builders in test/core.tests/ScratchBufferPoolingPropertyData.cs
-- [ ] T002 [P] Create contention and retry scenario builders in test/core.tests/ScratchBufferContentionPropertyData.cs
-- [ ] T003 [P] Create pooling benchmark scenario builders in perf/core.benchmarks/ScratchBufferPoolingBenchmarkScenarios.cs
+- [X] T001 Create pooling property scenario builders in test/core.tests/ScratchBufferPoolingPropertyData.cs
+- [X] T002 [P] Create contention and retry scenario builders in test/core.tests/ScratchBufferContentionPropertyData.cs
+- [X] T003 [P] Create pooling benchmark scenario builders in perf/core.benchmarks/ScratchBufferPoolingBenchmarkScenarios.cs
 
 ---
 
@@ -23,11 +23,11 @@
 
 **CRITICAL**: No capability-slice implementation should begin until this phase is complete.
 
-- [ ] T004 Create lease-tracking test oracle helpers in test/core.tests/ScratchBufferPoolingOracle.cs
-- [ ] T005 [P] Register pooling benchmark suite in perf/core.benchmarks/Program.cs
-- [ ] T006 [P] Register FsCheck arbitraries for pooling model families in test/core.tests/globals.cs
-- [ ] T007 Introduce internal scratch-lease and pool configuration types in src/core/ScratchBufferPooling.cs
-- [ ] T008 Add internal acquisition-exhaustion exception type in src/core/ScratchBufferPooling.cs
+- [X] T004 Create lease-tracking test oracle helpers in test/core.tests/ScratchBufferPoolingOracle.cs
+- [X] T005 [P] Register pooling benchmark suite in perf/core.benchmarks/Program.cs
+- [X] T006 [P] Register FsCheck arbitraries for pooling model families in test/core.tests/globals.cs
+- [X] T007 Introduce internal scratch-lease and pool configuration types in src/core/ScratchBufferPooling.cs
+- [X] T008 Add internal acquisition-exhaustion exception type in src/core/ScratchBufferPooling.cs
 
 **Checkpoint**: Shared property, benchmark, and internal pool primitives are ready.
 
@@ -41,19 +41,19 @@
 
 ### Tests for Capability Slice 1 ⚠️
 
-- [ ] T009 [P] [US1] Add FsCheck.Xunit property for planning-output parity under reuse in test/core.tests/ScratchBufferPoolingParityProperties.cs
-- [ ] T010 [P] [US1] Add FsCheck.Xunit property for firing-output parity under reuse in test/core.tests/ScratchBufferPoolingParityProperties.cs
-- [ ] T011 [P] [US1] Add FsCheck.Xunit property for steady-state scratch reuse (no per-cycle fresh-buffer requirement) in test/core.tests/ScratchBufferPoolingReuseProperties.cs
-- [ ] T012 [P] [US1] Add FsCheck.Xunit property for empty/zero-workload edge cases in test/core.tests/ScratchBufferPoolingReuseProperties.cs
+- [X] T009 [P] [US1] Add FsCheck.Xunit property for planning-output parity under reuse in test/core.tests/ScratchBufferPoolingParityProperties.cs
+- [X] T010 [P] [US1] Add FsCheck.Xunit property for firing-output parity under reuse in test/core.tests/ScratchBufferPoolingParityProperties.cs
+- [X] T011 [P] [US1] Add FsCheck.Xunit property for steady-state scratch reuse (no per-cycle fresh-buffer requirement) in test/core.tests/ScratchBufferPoolingReuseProperties.cs
+- [X] T012 [P] [US1] Add FsCheck.Xunit property for empty/zero-workload edge cases in test/core.tests/ScratchBufferPoolingReuseProperties.cs
 
 ### Implementation for Capability Slice 1
 
-- [ ] T013 [US1] Implement planning scratch acquisition/release around transition selection in src/core/FiringPlanner.cs
-- [ ] T014 [US1] Implement firing-delta scratch acquisition/release in src/core/GraphPetriNet.cs
-- [ ] T015 [US1] Implement firing-delta scratch acquisition/release in src/core/MatrixPetriNet.cs
-- [ ] T016 [US1] Wire pooled scratch helper into shared execution flow in src/core/PetriNetBase.cs
-- [ ] T017 [US1] Add idiomatic guard clauses for pool inputs and lease lifecycle boundaries in src/core/ScratchBufferPooling.cs
-- [ ] T018 [US1] Refactor pooling helpers for readability after US1 properties are green in src/core/ScratchBufferPooling.cs
+- [X] T013 [US1] Implement planning scratch acquisition/release around transition selection in src/core/FiringPlanner.cs
+- [X] T014 [US1] Implement firing-delta scratch acquisition/release in src/core/GraphPetriNet.cs
+- [X] T015 [US1] Implement firing-delta scratch acquisition/release in src/core/MatrixPetriNet.cs
+- [X] T016 [US1] Wire pooled scratch helper into shared execution flow in src/core/PetriNetBase.cs
+- [X] T017 [US1] Add idiomatic guard clauses for pool inputs and lease lifecycle boundaries in src/core/ScratchBufferPooling.cs
+- [X] T018 [US1] Refactor pooling helpers for readability after US1 properties are green in src/core/ScratchBufferPooling.cs
 
 **Checkpoint**: Capability Slice 1 is independently functional and testable.
 
@@ -67,21 +67,21 @@
 
 ### Tests for Capability Slice 2 ⚠️
 
-- [ ] T019 [P] [US2] Add FsCheck.Xunit property for no cross-call contamination invariant in test/core.tests/ScratchBufferOwnershipProperties.cs
-- [ ] T020 [P] [US2] Add FsCheck.Xunit property for no double-return invariant in test/core.tests/ScratchBufferOwnershipProperties.cs
-- [ ] T021 [P] [US2] Add FsCheck.Xunit property for lease release on exception paths in test/core.tests/ScratchBufferOwnershipProperties.cs
-- [ ] T022 [P] [US2] Add FsCheck.Xunit property for deterministic outputs under repeated identical concurrent inputs in test/core.tests/ScratchBufferDeterminismProperties.cs
-- [ ] T023 [P] [US2] Add FsCheck.Xunit property for reentrant/nested invocation safety in test/core.tests/ScratchBufferDeterminismProperties.cs
+- [X] T019 [P] [US2] Add FsCheck.Xunit property for no cross-call contamination invariant in test/core.tests/ScratchBufferOwnershipProperties.cs
+- [X] T020 [P] [US2] Add FsCheck.Xunit property for no double-return invariant in test/core.tests/ScratchBufferOwnershipProperties.cs
+- [X] T021 [P] [US2] Add FsCheck.Xunit property for lease release on exception paths in test/core.tests/ScratchBufferOwnershipProperties.cs
+- [X] T022 [P] [US2] Add FsCheck.Xunit property for deterministic outputs under repeated identical concurrent inputs in test/core.tests/ScratchBufferDeterminismProperties.cs
+- [X] T023 [P] [US2] Add FsCheck.Xunit property for reentrant/nested invocation safety in test/core.tests/ScratchBufferDeterminismProperties.cs
 
 ### Implementation for Capability Slice 2
 
-- [ ] T024 [US2] Implement thread-local pool ownership model and per-thread isolation in src/core/ScratchBufferPooling.cs
-- [ ] T025 [US2] Implement explicit lease-state transitions (acquired/released/faulted) in src/core/ScratchBufferPooling.cs
-- [ ] T026 [US2] Enforce exactly-once return semantics and use-after-release guards in src/core/ScratchBufferPooling.cs
-- [ ] T027 [US2] Ensure exception-safe release/fault paths in planning and fire operations in src/core/FiringPlanner.cs
-- [ ] T028 [US2] Ensure exception-safe release/fault paths in matrix fire flows in src/core/MatrixPetriNet.cs
-- [ ] T046 [US2] Ensure exception-safe release/fault paths in graph fire flows in src/core/GraphPetriNet.cs
-- [ ] T029 [US2] Refactor concurrency-critical sections while preserving green ownership/determinism properties in src/core/ScratchBufferPooling.cs
+- [X] T024 [US2] Implement thread-local pool ownership model and per-thread isolation in src/core/ScratchBufferPooling.cs
+- [X] T025 [US2] Implement explicit lease-state transitions (acquired/released/faulted) in src/core/ScratchBufferPooling.cs
+- [X] T026 [US2] Enforce exactly-once return semantics and use-after-release guards in src/core/ScratchBufferPooling.cs
+- [X] T027 [US2] Ensure exception-safe release/fault paths in planning and fire operations in src/core/FiringPlanner.cs
+- [X] T028 [US2] Ensure exception-safe release/fault paths in matrix fire flows in src/core/MatrixPetriNet.cs
+- [X] T046 [US2] Ensure exception-safe release/fault paths in graph fire flows in src/core/GraphPetriNet.cs
+- [X] T029 [US2] Refactor concurrency-critical sections while preserving green ownership/determinism properties in src/core/ScratchBufferPooling.cs
 
 **Checkpoint**: Capability Slice 2 is independently functional and testable.
 
@@ -95,23 +95,23 @@
 
 ### Tests and Benchmarks for Capability Slice 3 ⚠️
 
-- [ ] T030 [P] [US3] Add FsCheck.Xunit property for fallback-exhaustion failure atomicity in test/core.tests/ScratchBufferFailureModeProperties.cs
-- [ ] T031 [P] [US3] Add FsCheck.Xunit property for 5-retry exponential-backoff attempt budget invariant in test/core.tests/ScratchBufferFailureModeProperties.cs
-- [ ] T032 [P] [US3] Add benchmark scenarios for steady-state planning allocation rate in perf/core.benchmarks/ScratchBufferPoolingBenchmarkScenarios.cs
-- [ ] T033 [P] [US3] Add benchmark scenarios for steady-state firing allocation rate in perf/core.benchmarks/ScratchBufferPoolingBenchmarkScenarios.cs
-- [ ] T034 [P] [US3] Add benchmark comparisons for throughput-regression guardrails in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
-- [ ] T047 [P] [US3] Add benchmark replay determinism scenarios for repeated identical inputs in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
-- [ ] T048 [P] [US3] Add explicit concurrency stress validation scenarios and zero-violation assertions in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
+- [X] T030 [P] [US3] Add FsCheck.Xunit property for fallback-exhaustion failure atomicity in test/core.tests/ScratchBufferFailureModeProperties.cs
+- [X] T031 [P] [US3] Add FsCheck.Xunit property for 5-retry exponential-backoff attempt budget invariant in test/core.tests/ScratchBufferFailureModeProperties.cs
+- [X] T032 [P] [US3] Add benchmark scenarios for steady-state planning allocation rate in perf/core.benchmarks/ScratchBufferPoolingBenchmarkScenarios.cs
+- [X] T033 [P] [US3] Add benchmark scenarios for steady-state firing allocation rate in perf/core.benchmarks/ScratchBufferPoolingBenchmarkScenarios.cs
+- [X] T034 [P] [US3] Add benchmark comparisons for throughput-regression guardrails in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
+- [X] T047 [P] [US3] Add benchmark replay determinism scenarios for repeated identical inputs in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
+- [X] T048 [P] [US3] Add explicit concurrency stress validation scenarios and zero-violation assertions in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
 
 ### Implementation for Capability Slice 3
 
-- [ ] T035 [US3] Implement configurable per-thread retained-capacity cap and overflow routing in src/core/ScratchBufferPooling.cs
-- [ ] T036 [US3] Implement shared fallback acquisition with exactly 5 retries and exponential backoff in src/core/ScratchBufferPooling.cs
-- [ ] T037 [US3] Implement explicit acquisition-exhaustion exception path with no partial mutation in src/core/PetriNetBase.cs
-- [ ] T038 [US3] Bound pooling scope to targeted planning/fire hot paths only in src/core/FiringPlanner.cs
-- [ ] T039 [US3] Add benchmark harness and MemoryDiagnoser for pooling suite in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
-- [ ] T040 [US3] Update quickstart benchmark commands and acceptance thresholds in specs/005-scratch-buffer-pooling/quickstart.md
-- [ ] T049 [US3] Validate default per-thread cap value and override bounds behavior in test/core.tests/ScratchBufferFailureModeProperties.cs
+- [X] T035 [US3] Implement configurable per-thread retained-capacity cap and overflow routing in src/core/ScratchBufferPooling.cs
+- [X] T036 [US3] Implement shared fallback acquisition with exactly 5 retries and exponential backoff in src/core/ScratchBufferPooling.cs
+- [X] T037 [US3] Implement explicit acquisition-exhaustion exception path with no partial mutation in src/core/PetriNetBase.cs
+- [X] T038 [US3] Bound pooling scope to targeted planning/fire hot paths only in src/core/FiringPlanner.cs
+- [X] T039 [US3] Add benchmark harness and MemoryDiagnoser for pooling suite in perf/core.benchmarks/ScratchBufferPoolingBenchmarks.cs
+- [X] T040 [US3] Update quickstart benchmark commands and acceptance thresholds in specs/005-scratch-buffer-pooling/quickstart.md
+- [X] T049 [US3] Validate default per-thread cap value and override bounds behavior in test/core.tests/ScratchBufferFailureModeProperties.cs
 
 **Checkpoint**: Capability Slice 3 is independently functional and benchmark-verified.
 
@@ -121,12 +121,12 @@
 
 **Purpose**: Final consistency, traceability, and full validation evidence across slices.
 
-- [ ] T041 [P] Verify public API compatibility remains unchanged in src/core/GraphPetriNet.cs and src/core/MatrixPetriNet.cs
-- [ ] T042 [P] Update requirement traceability notes in specs/005-scratch-buffer-pooling/plan.md
-- [ ] T043 [P] Align behavioral/failure contract details with implemented semantics in specs/005-scratch-buffer-pooling/contracts/scratch-buffer-pooling-contract.md
-- [ ] T044 Run full property/regression suite and record outcomes in specs/005-scratch-buffer-pooling/quickstart.md
-- [ ] T045 Run full pooling benchmark suite and record SC-002/SC-003/SC-005 evidence in specs/005-scratch-buffer-pooling/quickstart.md
-- [ ] T050 Record SC-004 benchmark replay determinism evidence in specs/005-scratch-buffer-pooling/quickstart.md
+- [X] T041 [P] Verify public API compatibility remains unchanged in src/core/GraphPetriNet.cs and src/core/MatrixPetriNet.cs
+- [X] T042 [P] Update requirement traceability notes in specs/005-scratch-buffer-pooling/plan.md
+- [X] T043 [P] Align behavioral/failure contract details with implemented semantics in specs/005-scratch-buffer-pooling/contracts/scratch-buffer-pooling-contract.md
+- [X] T044 Run full property/regression suite and record outcomes in specs/005-scratch-buffer-pooling/quickstart.md
+- [X] T045 Run full pooling benchmark suite and record SC-002/SC-003/SC-005 evidence in specs/005-scratch-buffer-pooling/quickstart.md
+- [X] T050 Record SC-004 benchmark replay determinism evidence in specs/005-scratch-buffer-pooling/quickstart.md
 
 ---
 
@@ -160,7 +160,7 @@
 - T005 and T006 can run in parallel after T004.
 - In US1, T009 through T012 can run in parallel.
 - In US2, T019 through T023 can run in parallel.
-- In US3, T030 through T034 can run in parallel.
+- In US3, T030 through T034 and T047 through T048 can run in parallel.
 - In Polish, T041 through T043 can run in parallel.
 
 ### Parallel Example: Capability Slice 2

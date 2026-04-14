@@ -11,4 +11,9 @@
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="core.tests" />
+    <InternalsVisibleTo Include="core.benchmarks" />
+  </ItemGroup>
+
 </Project>
