@@ -5,129 +5,115 @@
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## Capability Scenarios & Testing *(mandatory)*
 
-Each story MUST be framed so its correctness can be validated by property-based tests that capture classes of behavior or invariants. If a story cannot yet be validated that way, refine the story until the required behavioral properties are clear.
+Each scenario MUST define an independently testable technical capability slice.
 
-<!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
--->
+For internal architecture or refactoring work, actors may be maintainers, release engineers, benchmark operators, or integration harnesses rather than end users.
 
-### User Story 1 - [Brief Title] (Priority: P1)
+Each capability slice MUST:
+- Capture behavioral invariants and contracts.
+- Be independently valuable and testable.
+- Define validation using property-based tests over input and state families.
 
-[Describe this user journey in plain language]
+All hard constraints from the input language (MUST, SHALL, MUST NOT) MUST appear explicitly in at least one acceptance scenario. If a hard constraint appears only in Functional Requirements, the specification is incomplete.
 
-**Why this priority**: [Explain the value and why it has this priority level]
+### Capability Slice 1 - [Brief Technical Outcome] (Priority: P1)
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**Capability**: [Describe the technical behavior boundary changed or preserved]
+
+**Why this priority**: [Explain risk/value and why this slice is first]
+
+**Independent Test**: [Describe property family plus oracle, including differential baseline comparison when applicable]
 
 **Acceptance Scenarios**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [initial state], **When** [action], **Then** [expected invariant or outcome]
+2. **Given** [initial state], **When** [action], **Then** [expected invariant or outcome]
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+### Capability Slice 2 - [Brief Technical Outcome] (Priority: P2)
 
-[Describe this user journey in plain language]
+**Capability**: [Describe technical behavior boundary]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**Why this priority**: [Explain risk/value]
 
-**Independent Test**: [Describe how this can be tested independently]
+**Independent Test**: [Property family and benchmark or diagnostic validation as applicable]
 
 **Acceptance Scenarios**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [initial state], **When** [action], **Then** [expected invariant or outcome]
 
 ---
 
-### User Story 3 - [Brief Title] (Priority: P3)
+### Capability Slice 3 - [Brief Technical Outcome] (Priority: P3)
 
-[Describe this user journey in plain language]
+**Capability**: [Describe technical behavior boundary]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**Why this priority**: [Explain risk/value]
 
-**Independent Test**: [Describe how this can be tested independently]
+**Independent Test**: [Property family and validation method]
 
 **Acceptance Scenarios**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [initial state], **When** [action], **Then** [expected invariant or outcome]
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+[Add more capability slices as needed, each with an assigned priority]
 
 ### Edge Cases
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
-
 - What happens when [boundary condition]?
-- How does system handle [error scenario]?
+- How does the system handle [failure mode]?
+- What deterministic behavior is required under repeated identical inputs?
+- What happens when affected-set size is zero or full?
 
 ## Requirements *(mandatory)*
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
-
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
-- **FR-006**: System MUST define the contract-sensitive behavior for inputs, outputs, invariants, and failure modes using idiomatic C# expectations rather than relying on deprecated Code Contracts tooling.
+- **FR-001**: System MUST [technical capability or invariant]
+- **FR-002**: System MUST [behavioral parity or contract]
+- **FR-003**: System MUST [failure-mode or deterministic behavior]
+- **FR-004**: System MUST [scope boundary and non-goals guard]
+- **FR-005**: System MUST define the contract-sensitive behavior for inputs, outputs, invariants, and failure modes using idiomatic C# expectations rather than relying on deprecated Code Contracts tooling.
 
 *Example of marking unclear requirements:*
 
-- **FR-007**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-008**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-006**: System MUST [NEEDS CLARIFICATION: missing detail]
 
 ### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
+- **[Entity 2]**: [Relationships and constraints]
+
+### Scenario to Requirement Traceability *(mandatory)*
+
+- **Capability Slice 1**: [FR-001, FR-003]
+- **Capability Slice 2**: [FR-002, FR-004]
+- **Capability Slice 3**: [FR-005]
+
+For each FR, list at least one acceptance scenario that proves it:
+- **FR-001 proven by**: [Slice 1, Scenario 1]
+- **FR-002 proven by**: [Slice 2, Scenario 1]
 
 ## Success Criteria *(mandatory)*
 
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
-
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: [Correctness or parity pass rate across randomized families]
+- **SC-002**: [Throughput delta vs baseline by workload profile]
+- **SC-003**: [Allowed regression ceiling for non-target profile]
+- **SC-004**: [Allocation delta and/or GC pressure target]
+- **SC-005**: [Determinism pass rate under repeated identical inputs]
 
-When performance is a goal, success criteria MUST state the correctness-preserving boundary first and then define the measurable performance target and validation method.
+When performance is a goal, success criteria MUST state correctness-preserving boundaries first, then measurable performance targets and validation method.
 
 ## Assumptions
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
--->
-
-- [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
-- [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
-- [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [Assumption about environment and workload profile]
+- [Assumption about baseline behavior source of truth]
+- [Assumption about scope boundaries and excluded optimizations]
+- [Assumption about required harnesses, benchmarks, and tests]

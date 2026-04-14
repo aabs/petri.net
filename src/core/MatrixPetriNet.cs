@@ -112,6 +112,8 @@ public class MatrixPetriNet : PetriNetBase
                 OutMatrix[outArc.Target, transitionOutArcs.Key] = outArc.Weight;
             }
         }
+
+        BuildSparseConnectivityIndexes(inArcs, outArcs);
     }
 
     #endregion
@@ -130,6 +132,11 @@ public class MatrixPetriNet : PetriNetBase
     public SparseMatrix InMatrix { get; set; }
     public SparseMatrix OutMatrix { get; set; }
     public SparseMatrix FlowMatrix { get; set; } = null!;
+    readonly Dictionary<int, HashSet<int>> nonInhibitorPlacesByTransition = new();
+    readonly Dictionary<int, HashSet<int>> inhibitorPlacesByTransition = new();
+    readonly Dictionary<int, HashSet<int>> outputPlacesByTransition = new();
+    readonly Dictionary<int, HashSet<int>> effectiveSupportByTransition = new();
+    readonly Dictionary<int, HashSet<int>> placeOutTransitions = new();
     public Dictionary<int, int> TransitionPriorities = new Dictionary<int, int>();
     public Dictionary<int, string> Places = new Dictionary<int, string>();
     public Dictionary<int, string> Transitions = new Dictionary<int, string>();
@@ -144,6 +151,8 @@ public class MatrixPetriNet : PetriNetBase
         Contract.Ensures(OutMatrix[placeId, transitionId] == Contract.OldValue(OutMatrix[placeId, transitionId]) + 1);
 
         OutMatrix[placeId, transitionId]++;
+        AddToIndex(outputPlacesByTransition, transitionId, placeId);
+        AddToIndex(effectiveSupportByTransition, transitionId, placeId);
     }
 
     public void AddArcIntoTransition(int placeId, int transitionId)
@@ -153,6 +162,9 @@ public class MatrixPetriNet : PetriNetBase
         Contract.Ensures(InMatrix[placeId, transitionId] == Contract.OldValue(InMatrix[placeId, transitionId]) + 1);
 
         InMatrix[placeId, transitionId]++;
+        AddToIndex(nonInhibitorPlacesByTransition, transitionId, placeId);
+        AddToIndex(placeOutTransitions, placeId, transitionId);
+        AddToIndex(effectiveSupportByTransition, transitionId, placeId);
     }
 
     #endregion
@@ -177,10 +189,14 @@ public class MatrixPetriNet : PetriNetBase
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        for (int i = 0; i < InMatrix.RowCount; i++)
+        if (!inhibitorPlacesByTransition.TryGetValue(transitionId, out var inhibitorPlaces))
         {
-            if (ArcIsInhibitor(i, transitionId))
-                yield return i;
+            yield break;
+        }
+
+        foreach (var placeId in inhibitorPlaces)
+        {
+            yield return placeId;
         }
     }
 
@@ -189,10 +205,14 @@ public class MatrixPetriNet : PetriNetBase
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        for (int i = 0; i < InMatrix.RowCount; i++)
+        if (!nonInhibitorPlacesByTransition.TryGetValue(transitionId, out var inputPlaces))
         {
-            if (InMatrix[i, transitionId] != 0.0 && !ArcIsInhibitor(i, transitionId))
-                yield return i;
+            yield break;
+        }
+
+        foreach (var placeId in inputPlaces)
+        {
+            yield return placeId;
         }
     }
     #endregion
@@ -219,9 +239,14 @@ public class MatrixPetriNet : PetriNetBase
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        for (var placeId = 0; placeId < InMatrix.RowCount; placeId++)
+        if (!inhibitorPlacesByTransition.TryGetValue(transitionId, out var inhibitorPlaces))
         {
-            if (ArcIsInhibitor(placeId, transitionId) && m[placeId] != 0)
+            return true;
+        }
+
+        foreach (var placeId in inhibitorPlaces)
+        {
+            if (m[placeId] != 0)
             {
                 return false;
             }
@@ -234,14 +259,14 @@ public class MatrixPetriNet : PetriNetBase
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        for (var placeId = 0; placeId < InMatrix.RowCount; placeId++)
+        if (!nonInhibitorPlacesByTransition.TryGetValue(transitionId, out var inputPlaces))
+        {
+            return true;
+        }
+
+        foreach (var placeId in inputPlaces)
         {
             var inputWeight = InMatrix[placeId, transitionId];
-            if (inputWeight == 0.0 || double.IsNaN(inputWeight))
-            {
-                continue;
-            }
-
             if (m[placeId] < inputWeight)
             {
                 return false;
@@ -255,7 +280,12 @@ public class MatrixPetriNet : PetriNetBase
     {
         Contract.Requires(Transitions.ContainsKey(transitionId));
 
-        return InMatrix.Column(transitionId).L1Norm() == 0;
+        var hasInputs = nonInhibitorPlacesByTransition.TryGetValue(transitionId, out var inputPlaces)
+                        && inputPlaces.Count > 0;
+        var hasInhibitors = inhibitorPlacesByTransition.TryGetValue(transitionId, out var inhibitorPlaces)
+                            && inhibitorPlaces.Count > 0;
+
+        return !hasInputs && !hasInhibitors;
     }
 
     public IEnumerable<int> GetEnabledTransitions(Marking m)
@@ -295,21 +325,31 @@ public class MatrixPetriNet : PetriNetBase
             return result;
         }
 
-        for (int placeId = 0; placeId < Places.Count; placeId++)
+        var deltasByPlace = new Dictionary<int, int>();
+        foreach (var transitionId in firingPlan.TransitionIds)
         {
-            double delta = 0.0;
-            foreach (var transitionId in firingPlan.TransitionIds)
+            if (outputPlacesByTransition.TryGetValue(transitionId, out var outputPlaces))
             {
-                var inputWeight = InMatrix[placeId, transitionId];
-                if (double.IsNaN(inputWeight))
+                foreach (var placeId in outputPlaces)
                 {
-                    inputWeight = 0.0;
+                    AddDelta(deltasByPlace, placeId, (int)OutMatrix[placeId, transitionId]);
                 }
-
-                delta += OutMatrix[placeId, transitionId] - inputWeight;
             }
 
-            result[placeId] = m[placeId] + (int)delta;
+            if (!nonInhibitorPlacesByTransition.TryGetValue(transitionId, out var inputPlaces))
+            {
+                continue;
+            }
+
+            foreach (var placeId in inputPlaces)
+            {
+                AddDelta(deltasByPlace, placeId, -(int)InMatrix[placeId, transitionId]);
+            }
+        }
+
+        foreach (var deltaByPlace in deltasByPlace)
+        {
+            result[deltaByPlace.Key] = m[deltaByPlace.Key] + deltaByPlace.Value;
         }
 
         DispatchFiringPlan(firingPlan, TransitionFunctions);
@@ -338,10 +378,14 @@ public class MatrixPetriNet : PetriNetBase
     }
     public override IEnumerable<int> GetPlaceOutArcs(int placeId)
     {
-        for (int transitionId = 0; transitionId < Transitions.Count; transitionId++)
+        if (!placeOutTransitions.TryGetValue(placeId, out var transitionIds))
         {
-            if (InMatrix[placeId, transitionId] > 0)
-                yield return transitionId;
+            yield break;
+        }
+
+        foreach (var transitionId in transitionIds)
+        {
+            yield return transitionId;
         }
     }
 
@@ -353,6 +397,75 @@ public class MatrixPetriNet : PetriNetBase
     public IEnumerable<ConflictSet> GetConflictingTransitions()
     {
         throw new NotImplementedException();
+    }
+
+    void BuildSparseConnectivityIndexes(
+        IReadOnlyDictionary<int, List<InArc>> inArcs,
+        IReadOnlyDictionary<int, List<OutArc>> outArcs)
+    {
+        nonInhibitorPlacesByTransition.Clear();
+        inhibitorPlacesByTransition.Clear();
+        outputPlacesByTransition.Clear();
+        effectiveSupportByTransition.Clear();
+        placeOutTransitions.Clear();
+
+        foreach (var transitionId in Transitions.Keys)
+        {
+            var inputs = new HashSet<int>();
+            var inhibitors = new HashSet<int>();
+            var outputs = new HashSet<int>();
+
+            if (inArcs.TryGetValue(transitionId, out var transitionInArcs))
+            {
+                foreach (var inArc in transitionInArcs)
+                {
+                    if (inArc.IsInhibitor)
+                    {
+                        inhibitors.Add(inArc.Source);
+                    }
+                    else
+                    {
+                        inputs.Add(inArc.Source);
+                        AddToIndex(placeOutTransitions, inArc.Source, transitionId);
+                    }
+                }
+            }
+
+            if (outArcs.TryGetValue(transitionId, out var transitionOutArcs))
+            {
+                foreach (var outArc in transitionOutArcs)
+                {
+                    outputs.Add(outArc.Target);
+                }
+            }
+
+            nonInhibitorPlacesByTransition[transitionId] = inputs;
+            inhibitorPlacesByTransition[transitionId] = inhibitors;
+            outputPlacesByTransition[transitionId] = outputs;
+            effectiveSupportByTransition[transitionId] = new HashSet<int>(inputs.Concat(outputs));
+        }
+    }
+
+    static void AddToIndex(Dictionary<int, HashSet<int>> index, int key, int value)
+    {
+        if (!index.TryGetValue(key, out var values))
+        {
+            values = new HashSet<int>();
+            index[key] = values;
+        }
+
+        values.Add(value);
+    }
+
+    static void AddDelta(Dictionary<int, int> deltasByPlace, int placeId, int delta)
+    {
+        if (!deltasByPlace.TryGetValue(placeId, out var existingDelta))
+        {
+            deltasByPlace[placeId] = delta;
+            return;
+        }
+
+        deltasByPlace[placeId] = existingDelta + delta;
     }
 }
 
