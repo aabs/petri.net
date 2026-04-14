@@ -376,7 +376,7 @@ Repeated Descendants/Where/Single traversals increase parse cost and allocation 
 
 ---
 
-### R5: Sparse matrix fire kernel redesign
+### R5: Sparse matrix fire kernel redesign: Done
 
 **Problem statement**
 The fix must make matrix firing operate on known non-zero structure instead of scanning the full place x transition space.
