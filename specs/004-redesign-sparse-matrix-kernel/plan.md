@@ -119,3 +119,15 @@ Output artifacts: `data-model.md`, `contracts/matrix-fire-kernel-contract.md`, `
 ## Complexity Tracking
 
 No constitution violations were required for this plan.
+
+## Implementation Status (2026-04-14)
+
+- Completed: Phase 1 Setup tasks T001-T003.
+- Completed: Phase 2 Foundational tasks T004, T005, T007.
+- Pending: T006 (FsCheck arbitrary registration strategy compatible with current test assembly conventions).
+- Completed: Capability Slice 1 tasks T008-T016.
+- Completed: Capability Slice 2 property tasks T017-T022.
+- In progress: Capability Slice 2 implementation tasks T023-T028.
+- Completed: Capability Slice 3 scaffolding tasks T029, T030, T032, T035.
+- Pending: Benchmark assertion/report gate task T031 and full evidence closure task T040 due unresolved `TransitionCount=512` benchmark stability.
+- Completed: Regression evidence run for T039 and plan status update for T041.

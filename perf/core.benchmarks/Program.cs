@@ -10,7 +10,8 @@ public static class Program
         [
             typeof(TransitionSelectionBenchmarks),
             typeof(HotPathAllocationBenchmarks),
-            typeof(ReverseLookupBenchmarks)
+            typeof(ReverseLookupBenchmarks),
+            typeof(SparseMatrixKernelBenchmarks)
         ]).Run(args);
     }
 }

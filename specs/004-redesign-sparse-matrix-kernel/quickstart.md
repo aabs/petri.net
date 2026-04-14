@@ -76,3 +76,21 @@ Validate:
 - New property-based parity, weighted-arithmetic, and determinism tests
 - Updated benchmark scenarios (including state-equation focus) and recorded evidence
 - Graduation summary tied to SC-001 through SC-007
+
+## 7. Latest Evidence (2026-04-14)
+
+### Regression and Property Gates
+
+- Command: `dotnet test petrinets2.slnx`
+- Result: Total 269, Succeeded 268, Failed 0, Skipped 1.
+- Note: The single skipped test is existing PNML-loader coverage (`TestLoadPnmlFile`) and is unrelated to sparse-kernel behavior.
+
+### Benchmark Snapshot
+
+- Command: `dotnet run -c Release --project perf/core.benchmarks/core.benchmarks.csproj -- --filter "*SparseMatrixKernelBenchmarks*"`
+- Result: Command completed and produced density-band results for `TransitionCount=128`.
+- Key outcomes:
+   - `Matrix_Fire` outperformed `Graph_Fire` for medium/high density in current benchmark run.
+   - `Matrix_StateEquationDelta` and `Graph_StateEquationDelta` were close, with matrix slightly faster in reported cases.
+   - Allocation for fire-path benchmarks remains in the same order of magnitude; state-equation delta allocations match in reported cases.
+- Follow-up required: `TransitionCount=512` entries reported `NA` and require stabilization before SC-002 through SC-007 can be fully accepted.

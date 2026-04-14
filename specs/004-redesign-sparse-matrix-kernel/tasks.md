@@ -11,9 +11,9 @@
 
 **Purpose**: Establish deterministic scenario generation and benchmark scaffolding.
 
-- [ ] T001 Create sparse execution property scenario builders in test/core.tests/SparseMatrixKernelPropertyData.cs
-- [ ] T002 [P] Create state-equation benchmark scenario builders in perf/core.benchmarks/StateEquationBenchmarkScenarios.cs
-- [ ] T003 [P] Create sparse/dense density-band benchmark scenario builders in perf/core.benchmarks/SparseMatrixBenchmarkScenarios.cs
+- [X] T001 Create sparse execution property scenario builders in test/core.tests/SparseMatrixKernelPropertyData.cs
+- [X] T002 [P] Create state-equation benchmark scenario builders in perf/core.benchmarks/StateEquationBenchmarkScenarios.cs
+- [X] T003 [P] Create sparse/dense density-band benchmark scenario builders in perf/core.benchmarks/SparseMatrixBenchmarkScenarios.cs
 
 ---
 
@@ -23,10 +23,10 @@
 
 **CRITICAL**: No capability-slice implementation should begin until this phase is complete.
 
-- [ ] T004 Create shared sparse-kernel benchmark harness with MemoryDiagnoser in perf/core.benchmarks/SparseMatrixKernelBenchmarks.cs
-- [ ] T005 [P] Register sparse-kernel and state-equation benchmarks in perf/core.benchmarks/Program.cs
+- [X] T004 Create shared sparse-kernel benchmark harness with MemoryDiagnoser in perf/core.benchmarks/SparseMatrixKernelBenchmarks.cs
+- [X] T005 [P] Register sparse-kernel and state-equation benchmarks in perf/core.benchmarks/Program.cs
 - [ ] T006 [P] Register FsCheck arbitraries for sparse/dense model families in test/core.tests/globals.cs
-- [ ] T007 Add baseline-vs-redesigned differential oracle helpers in test/core.tests/SparseMatrixKernelParityOracle.cs
+- [X] T007 Add baseline-vs-redesigned differential oracle helpers in test/core.tests/SparseMatrixKernelParityOracle.cs
 
 **Checkpoint**: Shared property and benchmark infrastructure is ready.
 
@@ -40,18 +40,18 @@
 
 ### Tests for Capability Slice 1 ⚠️
 
-- [ ] T008 [P] [US1] Add FsCheck.Xunit property for non-zero-only traversal invariant in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
-- [ ] T009 [P] [US1] Add FsCheck.Xunit property for disconnected rows/columns skip invariant in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
-- [ ] T010 [P] [US1] Add FsCheck.Xunit property for no enumeration of zero/non-existent paths in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
-- [ ] T011 [P] [US1] Add FsCheck.Xunit property for affected-place-only token updates in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
+- [X] T008 [P] [US1] Add FsCheck.Xunit property for non-zero-only traversal invariant in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
+- [X] T009 [P] [US1] Add FsCheck.Xunit property for disconnected rows/columns skip invariant in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
+- [X] T010 [P] [US1] Add FsCheck.Xunit property for no enumeration of zero/non-existent paths in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
+- [X] T011 [P] [US1] Add FsCheck.Xunit property for affected-place-only token updates in test/core.tests/MatrixPetriNetSparseTraversalProperties.cs
 
 ### Implementation for Capability Slice 1
 
-- [ ] T012 [US1] Introduce sparse connectivity index structures in src/core/MatrixPetriNet.cs
-- [ ] T013 [US1] Implement sparse fire traversal over known non-zero connectivity in src/core/MatrixPetriNet.cs
-- [ ] T014 [US1] Implement affected-place set aggregation and bounded token-delta application in src/core/MatrixPetriNet.cs
-- [ ] T015 [US1] Remove full place x transition scan dependency in fire execution path in src/core/MatrixPetriNet.cs
-- [ ] T016 [US1] Refactor sparse traversal helpers for readability while preserving green properties in src/core/MatrixPetriNet.cs
+- [X] T012 [US1] Introduce sparse connectivity index structures in src/core/MatrixPetriNet.cs
+- [X] T013 [US1] Implement sparse fire traversal over known non-zero connectivity in src/core/MatrixPetriNet.cs
+- [X] T014 [US1] Implement affected-place set aggregation and bounded token-delta application in src/core/MatrixPetriNet.cs
+- [X] T015 [US1] Remove full place x transition scan dependency in fire execution path in src/core/MatrixPetriNet.cs
+- [X] T016 [US1] Refactor sparse traversal helpers for readability while preserving green properties in src/core/MatrixPetriNet.cs
 
 **Checkpoint**: Capability Slice 1 is independently functional and testable.
 
@@ -65,12 +65,12 @@
 
 ### Tests for Capability Slice 2 ⚠️
 
-- [ ] T017 [P] [US2] Add FsCheck.Xunit property for post-fire marking parity in test/core.tests/MatrixPetriNetParityProperties.cs
-- [ ] T018 [P] [US2] Add FsCheck.Xunit property for exact state-equation result-value equality in test/core.tests/MatrixPetriNetStateEquationProperties.cs
-- [ ] T019 [P] [US2] Add FsCheck.Xunit property for state-equation baseline transition-set semantics in test/core.tests/MatrixPetriNetStateEquationProperties.cs
-- [ ] T020 [P] [US2] Add FsCheck.Xunit property for side-effect invocation order parity in test/core.tests/MatrixPetriNetParityProperties.cs
-- [ ] T021 [P] [US2] Add FsCheck.Xunit property for enablement/conflict outcome parity in test/core.tests/MatrixPetriNetParityProperties.cs
-- [ ] T022 [P] [US2] Add FsCheck.Xunit property for determinism under repeated identical inputs in test/core.tests/MatrixPetriNetParityProperties.cs
+- [X] T017 [P] [US2] Add FsCheck.Xunit property for post-fire marking parity in test/core.tests/MatrixPetriNetParityProperties.cs
+- [X] T018 [P] [US2] Add FsCheck.Xunit property for exact state-equation result-value equality in test/core.tests/MatrixPetriNetStateEquationProperties.cs
+- [X] T019 [P] [US2] Add FsCheck.Xunit property for state-equation baseline transition-set semantics in test/core.tests/MatrixPetriNetStateEquationProperties.cs
+- [X] T020 [P] [US2] Add FsCheck.Xunit property for side-effect invocation order parity in test/core.tests/MatrixPetriNetParityProperties.cs
+- [X] T021 [P] [US2] Add FsCheck.Xunit property for enablement/conflict outcome parity in test/core.tests/MatrixPetriNetParityProperties.cs
+- [X] T022 [P] [US2] Add FsCheck.Xunit property for determinism under repeated identical inputs in test/core.tests/MatrixPetriNetParityProperties.cs
 
 ### Implementation for Capability Slice 2
 
@@ -93,17 +93,17 @@
 
 ### Tests and Benchmarks for Capability Slice 3 ⚠️
 
-- [ ] T029 [P] [US3] Add benchmark scenarios for fire throughput across low/medium/high density bands in perf/core.benchmarks/SparseMatrixBenchmarkScenarios.cs
-- [ ] T030 [P] [US3] Add benchmark scenarios for state-equation throughput across low/medium/high density bands in perf/core.benchmarks/StateEquationBenchmarkScenarios.cs
+- [X] T029 [P] [US3] Add benchmark scenarios for fire throughput across low/medium/high density bands in perf/core.benchmarks/SparseMatrixBenchmarkScenarios.cs
+- [X] T030 [P] [US3] Add benchmark scenarios for state-equation throughput across low/medium/high density bands in perf/core.benchmarks/StateEquationBenchmarkScenarios.cs
 - [ ] T031 [P] [US3] Add benchmark assertions/report checks for <=5% dense regression on fire and state-equation workloads in perf/core.benchmarks/SparseMatrixKernelBenchmarks.cs
-- [ ] T032 [P] [US3] Add allocation-focused benchmark capture for sparse workloads in perf/core.benchmarks/SparseMatrixKernelBenchmarks.cs
+- [X] T032 [P] [US3] Add allocation-focused benchmark capture for sparse workloads in perf/core.benchmarks/SparseMatrixKernelBenchmarks.cs
 
 ### Implementation for Capability Slice 3
 
-- [ ] T033 [US3] Optimize sparse execution hot paths based on benchmark evidence in src/core/MatrixPetriNet.cs
+- [X] T033 [US3] Optimize sparse execution hot paths based on benchmark evidence in src/core/MatrixPetriNet.cs
 - [ ] T034 [US3] Optimize state-equation sparse path for density-band gains in src/core/MatrixPetriNet.cs
-- [ ] T035 [US3] Update benchmark registration and filters for sparse fire/state-equation suites in perf/core.benchmarks/Program.cs
-- [ ] T036 [US3] Record benchmark gate expectations and command workflow in specs/004-redesign-sparse-matrix-kernel/quickstart.md
+- [X] T035 [US3] Update benchmark registration and filters for sparse fire/state-equation suites in perf/core.benchmarks/Program.cs
+- [X] T036 [US3] Record benchmark gate expectations and command workflow in specs/004-redesign-sparse-matrix-kernel/quickstart.md
 
 **Checkpoint**: Capability Slice 3 is independently functional and benchmark-verified.
 
@@ -113,11 +113,11 @@
 
 **Purpose**: Final consistency, evidence capture, and closure tasks across slices.
 
-- [ ] T037 [P] Verify external MatrixPetriNet API signature compatibility against baseline in src/core/MatrixPetriNet.cs
-- [ ] T038 [P] Update contract traceability for FR-014 and FR-015 in specs/004-redesign-sparse-matrix-kernel/contracts/matrix-fire-kernel-contract.md
-- [ ] T039 Run full regression/property suite and record outcomes in specs/004-redesign-sparse-matrix-kernel/quickstart.md
+- [X] T037 [P] Verify external MatrixPetriNet API signature compatibility against baseline in src/core/MatrixPetriNet.cs
+- [X] T038 [P] Update contract traceability for FR-014 and FR-015 in specs/004-redesign-sparse-matrix-kernel/contracts/matrix-fire-kernel-contract.md
+- [X] T039 Run full regression/property suite and record outcomes in specs/004-redesign-sparse-matrix-kernel/quickstart.md
 - [ ] T040 Run full benchmark suite and record SC-002 through SC-007 evidence in specs/004-redesign-sparse-matrix-kernel/quickstart.md
-- [ ] T041 Update implementation status and completion checklist in specs/004-redesign-sparse-matrix-kernel/plan.md
+- [X] T041 Update implementation status and completion checklist in specs/004-redesign-sparse-matrix-kernel/plan.md
 
 ---
 

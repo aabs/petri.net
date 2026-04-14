@@ -422,6 +422,10 @@ FodyWeavers.xsd
 # Local History for Visual Studio Code
 .history/
 
+# JetBrains IDE and editor swap files
+.idea/
+*.swp
+
 # Built Visual Studio Code Extensions
 *.vsix
 
