@@ -245,6 +245,7 @@ When generating code here:
 ## Active Technologies
 - C# 14 on .NET 10 (`net10.0`) + `MathNet.Numerics` (core), `FsCheck` + `FsCheck.Xunit` + `xUnit` (tests), `BenchmarkDotNet` (perf) (003-reverse-lookup-maps)
 - N/A (in-memory dictionaries and PNML file input) (003-reverse-lookup-maps)
+- N/A (in-memory markings and incidence structures) (005-redesign-sparse-matrix-kernel)
 
 ## Recent Changes
 - 003-reverse-lookup-maps: Added C# 14 on .NET 10 (`net10.0`) + `MathNet.Numerics` (core), `FsCheck` + `FsCheck.Xunit` + `xUnit` (tests), `BenchmarkDotNet` (perf)
