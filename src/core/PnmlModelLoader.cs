@@ -5,6 +5,7 @@ using System.Xml.Linq;
 
 namespace petrinets2.core;
 
+[Obsolete("PnmlModelLoader is deprecated. Use PnmlStreamingModelLoader.LoadGraph(...) or LoadMatrix(...) for new code.")]
 public static class PnmlModelLoader
 {
     private static int seed;

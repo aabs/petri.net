@@ -2,6 +2,8 @@ namespace core.tests;
 
 using core.benchmarks;
 
+#pragma warning disable CS0618
+
 public class ReverseLookupBenchmarkProperties
 {
     [Property]
@@ -48,3 +50,5 @@ public class ReverseLookupBenchmarkProperties
             && first.OutArcs.Count == second.OutArcs.Count;
     }
 }
+
+#pragma warning restore CS0618

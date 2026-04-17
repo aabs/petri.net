@@ -3,6 +3,8 @@ namespace core.benchmarks;
 using BenchmarkDotNet.Attributes;
 using petrinets2.core;
 
+#pragma warning disable CS0618
+
 [MemoryDiagnoser]
 public class ReverseLookupBenchmarks
 {
@@ -51,3 +53,5 @@ public class ReverseLookupBenchmarks
         return PnmlModelLoader.LoadMarkings(pnmlScenario.PnmlPath, loadedNets);
     }
 }
+
+#pragma warning restore CS0618
