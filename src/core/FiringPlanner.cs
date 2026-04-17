@@ -7,20 +7,34 @@ public static class FiringPlanner
         ArgumentNullException.ThrowIfNull(enabledTransitions);
         ArgumentNullException.ThrowIfNull(getTransitionPriority);
 
-        var enabled = enabledTransitions.ToArray();
-        if (enabled.Length == 0)
+        using var planningScratchLease = ScratchBufferPooling.AcquirePlanningScratch();
+        try
         {
-            return FiringPlan.Empty;
-        }
+            var enabled = planningScratchLease.Buffer;
+            foreach (var transitionId in enabledTransitions)
+            {
+                enabled.Add(transitionId);
+            }
 
-        if (!isConflicted)
+            if (enabled.Count == 0)
+            {
+                return FiringPlan.Empty;
+            }
+
+            if (!isConflicted)
+            {
+                return FiringPlan.FromTransitions(enabled);
+            }
+
+            var selectedTransition = TransitionSelection.SelectHighestPriority(enabled, getTransitionPriority);
+            return selectedTransition.HasValue
+                ? FiringPlan.ForTransition(selectedTransition.Value)
+                : FiringPlan.Empty;
+        }
+        catch
         {
-            return FiringPlan.FromTransitions(enabled);
+            planningScratchLease.MarkFaulted();
+            throw;
         }
-
-        var selectedTransition = TransitionSelection.SelectHighestPriority(enabled, getTransitionPriority);
-        return selectedTransition.HasValue
-            ? FiringPlan.ForTransition(selectedTransition.Value)
-            : FiringPlan.Empty;
     }
 }

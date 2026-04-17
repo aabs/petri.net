@@ -11,7 +11,8 @@ public static class Program
             typeof(TransitionSelectionBenchmarks),
             typeof(HotPathAllocationBenchmarks),
             typeof(ReverseLookupBenchmarks),
-            typeof(SparseMatrixKernelBenchmarks)
+            typeof(SparseMatrixKernelBenchmarks),
+            typeof(ScratchBufferPoolingBenchmarks)
         ]).Run(args);
     }
 }
